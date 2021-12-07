@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_url_path='/source', static_folder='./static')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:jojo811217@localhost:3306/SHOPDB'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:xxxx@localhost:3306/SHOPDB'
 db = SQLAlchemy(app)
 # app.register_blueprint(test_controller, url_prefix='/otherfunctions')
 
