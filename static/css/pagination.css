@@ -1,0 +1,63 @@
+// variables
+$backColor: (
+  active: #679509,
+  unClick: #ddd,
+  default: #fff
+);
+$fontColor: (
+  active: #fff,
+  unClick: #444,
+  default: #444
+);
+
+// main
+.Pagination {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: map-get($fontColor, default);
+  .pagination__group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .pagination__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    border-width: 1px 1px 1px 0;
+    background-color: #fff;
+    background-color: map-get($backColor, default);
+    transition: all 0.3s;
+    cursor: pointer;
+    &.active,
+    &:hover {
+      background-color: map-get($backColor, active);
+      color: map-get($fontColor, active);
+    }
+    &.unclick {
+      background-color: map-get($backColor, unClick);
+      color: map-get($fontColor, unClick);
+      cursor: not-allowed;
+    }
+    &.pre::after {
+      content: "<<";
+    }
+    &.next::after {
+      position: relative;
+      z-index: 1;
+      content: ">>";
+    }
+    &:first-child {
+      border-left: 1px solid #ddd;
+      border-radius: 5px 0 0 5px;
+    }
+    &:last-child {
+      border-radius: 0 5px 5px 0;
+    }
+  }
+}
