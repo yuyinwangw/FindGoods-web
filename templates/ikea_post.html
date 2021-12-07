@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopproject</title>
+</head>
+<body>
+    <form action="/plateform_post" method="POST">
+        Choose your favorite Shop.
+        <br>
+        <select name="PL">
+            <option value="" selected>請選擇你最愛的店家</option>
+            <option value="IKEA">IKEA</option>
+            <option value="TRPLUS">特力家</option>
+        </select>
+        <input type="submit" value="送出">
+    </form>
+
+    {% if requestMethod == 'POST' and pfname != ''%}
+    <div>
+        {{ pfname }}
+        <table border="1" width="500">
+        <thead>
+            <tr>
+                {% for c in column %}
+                <th>
+                    {{ c }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                {% for item_info in item %}
+                <td>
+                    {{ item_info }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endif %}
+
+</body>
+</html>
