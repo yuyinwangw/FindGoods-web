@@ -29,8 +29,11 @@ class Item(db.Model):
 def index():
     # dataInfo = model_c.getIkeaInfo()
     dataInfo = [[d.ItemNo, d.ItemName, d.URL, str(d.Price), d.Brand, d.Cate] for d in db.session.query(Item)]
+    for i, data in enumerate(dataInfo):
+        dataInfo[i][1] = ("img/ikea_photos/" + data[1] + "_1.jpg")
     return render_template('index.html', dataInfo=dataInfo)
     # , dataInfo=dataInfo
+
 
 @app.route('/index2.html', methods=['GET'])
 def index2():
@@ -39,21 +42,26 @@ def index2():
     return render_template('index2.html', dataInfo=dataInfo)
     # , dataInfo=dataInfo
 
+
 @app.route('/cart.html', methods=['GET'])
 def cart():
     return render_template('cart.html')
+
 
 @app.route('/checkout.html', methods=['GET'])
 def checkout():
     return render_template('checkout.html')
 
+
 @app.route('/contact.html', methods=['GET'])
 def contact():
     return render_template('contact.html')
 
+
 @app.route('/products.html', methods=['GET'])
 def product():
     return render_template('products.html')
+
 
 @app.route('/register.html', methods=['GET'])
 def register():
