@@ -221,7 +221,7 @@ section#footer-bar h4 {
 	margin: 10px 0 18px;	
 }
 section#footer-bar .social_icons a {
-	display: block;
+	/* display: block;
 	float: left;
 	width: 29px;
 	height: 28px;
@@ -233,21 +233,23 @@ section#footer-bar .social_icons a {
 	-moz-transition: all 0.4s;
 	-o-transition: all 0.4s;
 	-ms-transition: all 0.4s;
-	transition: all 0.4s;
+	transition: all 0.4s; */
+	color: rgba(253, 149, 31, 0.808);    
+    transition: all 0.3s ease;
 }
 section#footer-bar .social_icons a.facebook:hover {
 	background-position: 0 -29px;
 }
-section#footer-bar .social_icons a.twitter {
+section#footer-bar .social_icons a.instagram {
 	background-position: -38px 0;
 }
-section#footer-bar .social_icons a.twitter:hover {
+section#footer-bar .social_icons a.instagram:hover {
 	background-position: -38px -29px;
 }
-section#footer-bar .social_icons a.skype {
+section#footer-bar .social_icons a.linkedin {
 	background-position: -76px 0;
 }
-section#footer-bar .social_icons a.skype:hover {
+section#footer-bar .social_icons a.linkedin:hover {
 	background-position: -76px -29px;
 }
 section#footer-bar .social_icons a.vimeo {

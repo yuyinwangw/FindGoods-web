@@ -7,22 +7,23 @@
 		<meta name="description" content="">
 		<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
 		<!-- bootstrap -->
-		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">      
-		<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">		
-		<link href="themes/css/bootstrappage.css" rel="stylesheet"/>
+		<link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+		<link href="{{url_for('static', filename='css/bootstrap-responsive.min.css')}}" rel="stylesheet">
+		<link href="{{url_for('static', filename='css/bootstrappage.css')}}" rel="stylesheet"/>
 		
 		<!-- global styles -->
-		<link href="themes/css/flexslider.css" rel="stylesheet"/>
-		<link href="themes/css/main.css" rel="stylesheet"/>
-
+		<link href="{{url_for('static', filename='css/flexslider.css')}}" rel="stylesheet"/>
+		<link href="{{url_for('static', filename='css/main.css')}}" rel="stylesheet"/>
+		<link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}"> <!-- https://fontawesome.com/ -->
+		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> <!-- https://fonts.google.com/ -->
 		<!-- scripts -->
-		<script src="themes/js/jquery-1.7.2.min.js"></script>
-		<script src="bootstrap/js/bootstrap.min.js"></script>				
-		<script src="themes/js/superfish.js"></script>	
-		<script src="themes/js/jquery.scrolltotop.js"></script>
+		<script src="{{url_for('static', filename='js/jquery-1.7.2.min.js')}}"></script>
+		<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+		<script src="{{url_for('static', filename='js/superfish.js')}}"></script>
+		<script src="{{url_for('static', filename='js/jquery.scrolltotop.js')}}"></script>
 		<!--[if lt IE 9]>			
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-			<script src="js/respond.min.js"></script>
+			<script src="{{url_for('static', filename='js/respond.min.js')}}"></script>
 		<![endif]-->
 	</head>
     <body>		
@@ -47,28 +48,24 @@
 		</div>
 		<div id="wrapper" class="container">
 			<section class="navbar main-menu">
-				<div class="navbar-inner main-menu">				
-					<a href="index.html" class="logo pull-left"><img src="themes/images/logo.png" class="site_logo" alt=""></a>
+				<div class="navbar-inner main-menu">
+					<a href="index.html" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
 					<nav id="menu" class="pull-right">
 						<ul>
-							<li><a href="./products.html">Woman</a>					
+							<li><a href="./products.html">Category</a>
 								<ul>
-									<li><a href="./products.html">Lacinia nibh</a></li>									
-									<li><a href="./products.html">Eget molestie</a></li>
-									<li><a href="./products.html">Varius purus</a></li>									
+									<li><a href="./products.html">Frame</a></li>
+									<li><a href="./products.html">Table Lamp</a></li>
+									<li><a href="./products.html">Vase</a></li>
+									<li><a href="./products.html">Desk</a></li>
+									<li><a href="./products.html">Mug</a></li>
+									<li><a href="./products.html">Footstool</a></li>
+									<li><a href="./products.html">Cushion</a></li>
 								</ul>
-							</li>															
-							<li><a href="./products.html">Man</a></li>			
-							<li><a href="./products.html">Sport</a>
-								<ul>									
-									<li><a href="./products.html">Gifts and Tech</a></li>
-									<li><a href="./products.html">Ties and Hats</a></li>
-									<li><a href="./products.html">Cold Weather</a></li>
-								</ul>
-							</li>							
-							<li><a href="./products.html">Hangbag</a></li>
-							<li><a href="./products.html">Best Seller</a></li>
-							<li><a href="./products.html">Top Seller</a></li>
+							</li>
+							<li><a href="./search.html">Photo to Search</a></li>
+							<li><a href="./trend.html">Popular trending</a></li>
+							<li><a href="./about.html">About us</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -156,10 +153,9 @@
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
 						<br/>
 						<span class="social_icons">
-							<a class="facebook" href="#">Facebook</a>
-							<a class="twitter" href="#">Twitter</a>
-							<a class="skype" href="#">Skype</a>
-							<a class="vimeo" href="#">Vimeo</a>
+							<a class="facebook" href="https://www.facebook.com/oldpig81701"><i class="fab fa-facebook fa-2x"></i></a>
+							<a class="instagram" href="https://www.instagram.com/tsung_yo_chu/"><i class="fab fa-instagram fa-2x"></i></a>
+							<a class="linkedin" href="https://www.linkedin.com/in/joseph-chu-275660180"><i class="fab fa-linkedin fa-2x"></i></a>
 						</span>
 					</div>					
 				</div>	
@@ -168,6 +164,6 @@
 				<span>Copyright 2013 bootstrappage template  All right reserved.</span>
 			</section>
 		</div>
-		<script src="themes/js/common.js"></script>		
+		<script src="{{url_for('static', filename='js/common.js')}}></script>
     </body>
 </html>

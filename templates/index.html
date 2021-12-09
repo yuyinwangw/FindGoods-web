@@ -16,6 +16,8 @@
 		<link href="{{url_for('static', filename='css/flexslider.css')}}" rel="stylesheet"/>
 		<link href="{{url_for('static', filename='css/main.css')}}" rel="stylesheet"/>
 		<link href="{{url_for('static', filename='css/pagination.css')}}" rel="stylesheet"/>
+		<link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}"> <!-- https://fontawesome.com/ -->
+		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> <!-- https://fonts.google.com/ -->
 		<!-- scripts -->
 		<script src="{{url_for('static', filename='js/jquery-1.7.2.min.js')}}"></script>
 		<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
@@ -92,7 +94,7 @@
 					<a href="index.html" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
 					<nav id="menu" class="pull-right">
 						<ul>
-							<li><a href="./products.html">Shop All</a>
+							<li><a href="./products.html">Category</a>
 								<ul>
 									<li><a href="./products.html">Frame</a></li>
 									<li><a href="./products.html">Table Lamp</a></li>
@@ -103,17 +105,9 @@
 									<li><a href="./products.html">Cushion</a></li>
 								</ul>
 							</li>															
-							<li><a href="./products.html">Recommend</a></li>
-							<li><a href="./products.html">Style</a>
-								<ul>									
-									<li><a href="./products.html">Modern Style</a></li>
-									<li><a href="./products.html">Industrial Style</a></li>
-									<li><a href="./products.html">Scandinavian Style</a></li>
-									<li><a href="./products.html">Country Style</a></li>
-								</ul>
-							</li>							
-							<li><a href="./products.html">Best Seller</a></li>
-							<li><a href="./products.html">Gallery</a></li>
+							<li><a href="./search.html">Photo to Search</a></li>
+							<li><a href="./trend.html">Popular trending</a></li>
+							<li><a href="./about.html">About us</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -123,19 +117,19 @@
 					<ul class="slides">
 						<li>
 							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_16266865612013271036.jpeg" alt="" />
-							<div class="intro">
-								<h1>Mid season sale</h1>
-								<p><span>Up to 50% Off</span></p>
-								<p><span>On selected items online and in stores</span></p>
-							</div>
+<!--							<div class="intro">-->
+<!--								<h1>Mid season sale</h1>-->
+<!--								<p><span>Up to 50% Off</span></p>-->
+<!--								<p><span>On selected items online and in stores</span></p>-->
+<!--							</div>-->
 						</li>
 						<li>
 							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_162401349573783886.jpeg" alt="" />
-							<div class="intro">
-								<h1>Mid season sale</h1>
-								<p><span>Up to 50% Off</span></p>
-								<p><span>On selected items online and in stores</span></p>
-							</div>
+<!--							<div class="intro">-->
+<!--								<h1>Mid season sale</h1>-->
+<!--								<p><span>Up to 50% Off</span></p>-->
+<!--								<p><span>On selected items online and in stores</span></p>-->
+<!--							</div>-->
 						</li>
 					</ul>
 				</div>			
@@ -206,10 +200,10 @@
 												<li class="span3">
 													<div class="product-box">
 														<span class="sale_tag"></span>
-														<p><a href="{{i[2]}}"><img src="{{i[3]}}" alt="" /></a></p>
-														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+														<p><a href="{{i[2]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
+														<p class="itemname"><font face="Courgette" size="1">{{i[1]}}</font></p><br/>
 														<a href="products.html" class="category">Commodo consequat</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[1]}}</font></p>
+														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
 													</div>
 												</li>
 												{% endfor %}
@@ -439,10 +433,12 @@
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
 						<br/>
 						<span class="social_icons">
-							<a class="facebook" href="#">Facebook</a>
-							<a class="twitter" href="#">Twitter</a>
-							<a class="skype" href="#">Skype</a>
-							<a class="vimeo" href="#">Vimeo</a>
+							<a class="facebook" href="https://www.facebook.com/oldpig81701"><i class="fab fa-facebook fa-2x"></i></a>
+							<a class="instagram" href="https://www.instagram.com/tsung_yo_chu/"><i class="fab fa-instagram fa-2x"></i></a>
+							<a class="linkedin" href="https://www.linkedin.com/in/joseph-chu-275660180"><i class="fab fa-linkedin fa-2x"></i></a>
+<!--							<a class="twitter" href="#">Twitter</a>-->
+<!--							<a class="skype" href="#">Skype</a>-->
+<!--							<a class="vimeo" href="#">Vimeo</a>-->
 						</span>
 					</div>					
 				</div>	
