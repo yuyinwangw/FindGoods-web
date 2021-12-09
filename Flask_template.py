@@ -43,6 +43,26 @@ def index2():
     # , dataInfo=dataInfo
 
 
+@app.route('/products.html', methods=['GET'])
+def product():
+    return render_template('products.html')
+
+
+@app.route('/search.html', methods=['GET'])
+def search():
+    return render_template('search.html')
+
+
+@app.route('/trend.html', methods=['GET'])
+def trend():
+    return render_template('trend.html')
+
+
+@app.route('/about.html', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+
 @app.route('/cart.html', methods=['GET'])
 def cart():
     return render_template('cart.html')
@@ -56,11 +76,6 @@ def checkout():
 @app.route('/contact.html', methods=['GET'])
 def contact():
     return render_template('contact.html')
-
-
-@app.route('/products.html', methods=['GET'])
-def product():
-    return render_template('products.html')
 
 
 @app.route('/register.html', methods=['GET'])
