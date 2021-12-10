@@ -26,7 +26,7 @@
 		<script src="{{url_for('static', filename='js/pagination.js')}}"></script>
 		<!--[if lt IE 9]>			
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-			<script src="js/respond.min.js"></script>
+			<script src="{{url_for('static', filename='js/respond.min.js')}}"></script>
 		<![endif]-->
 		<title>直角分頁頁碼</title>
 		<style type="text/css">
@@ -79,7 +79,7 @@
 				<div class="span8">
 					<div class="account pull-right">
 						<ul class="user-menu">				
-							<li><a href="#">My Account</a></li>
+							<li><a href="myaccount.html">My Account</a></li>
 							<li><a href="cart.html">Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>					
 							<li><a href="register.html">Login</a></li>		
@@ -249,7 +249,7 @@
 						<div class="page-normal">
 							<span class="page-prev">&lt;</span>
 							<!-- 數字1 代表當前頁面-->
-							<span class="page-current">1</span>
+							<a class="page-current">1</a>
 							<a href="index2.html">2</a>
 							<a href="index3.html">3</a>
 							<a href="#">4</a>
@@ -345,10 +345,10 @@
 <!--														<p class="price">$25.20</p>-->
 <!--													</div>-->
 <!--												</li>-->
-											</ul>
-										</div>
-									</div>							
-								</div>
+<!--											</ul>-->
+<!--										</div>-->
+<!--									</div>							-->
+<!--								</div>-->
 							</div>						
 						</div>
 <!--						<div class="row feature_box">						-->
@@ -409,25 +409,27 @@
 
 			<section id="footer-bar">
 				<div class="row">
-					<div class="span3">
+					<div class="span2"></div>
+					<div class="span5">
 						<h4>Navigation</h4>
 						<ul class="nav">
 							<li><a href="./index.html">Homepage</a></li>  
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./contact.html">Contac Us</a></li>
+							<li><a href="./contact.html">Contact Us</a></li>
 							<li><a href="./cart.html">Cart</a></li>
-							<li><a href="./register.html">Login</a></li>							
+							<li><a href="./register.html">Login</a></li>
+							<li><a href="myaccount.html">My Account</a></li>
 						</ul>					
 					</div>
-					<div class="span4">
-						<h4>My Account</h4>
-						<ul class="nav">
-							<li><a href="#">My Account</a></li>
-							<li><a href="#">Order History</a></li>
-							<li><a href="#">Wish List</a></li>
-							<li><a href="#">Newsletter</a></li>
-						</ul>
-					</div>
+<!--					<div class="span4">-->
+<!--						<h4><a href="myaccount.html">My Account</a></h4>-->
+<!--						<ul class="nav">-->
+<!--							<li><a href="myaccount.html">My Account</a></li>-->
+<!--							<li><a href="#">Order History</a></li>-->
+<!--							<li><a href="#">Wish List</a></li>-->
+<!--							<li><a href="#">Newsletter</a></li>-->
+<!--						</ul>-->
+<!--					</div>-->
 					<div class="span5">
 						<p class="logo"><img src="{{url_for('static', filename='img/logo.png')}}" class="site_logo" alt=""></p>
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>

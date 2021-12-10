@@ -38,7 +38,9 @@ def index():
 @app.route('/index2.html', methods=['GET'])
 def index2():
     # dataInfo = model_c.getIkeaInfo()
-    dataInfo = [[d.ItemNo, d.ItemName, str(d.Price), d.Brand, d.Cate] for d in db.session.query(Item)]
+    dataInfo = [[d.ItemNo, d.ItemName, d.URL, str(d.Price), d.Brand, d.Cate] for d in db.session.query(Item)]
+    for i, data in enumerate(dataInfo):
+        dataInfo[i][1] = ("img/ikea_photos/" + data[1] + "_1.jpg")
     return render_template('index2.html', dataInfo=dataInfo)
     # , dataInfo=dataInfo
 
@@ -61,6 +63,11 @@ def trend():
 @app.route('/about.html', methods=['GET'])
 def about():
     return render_template('about.html')
+
+
+@app.route('/myaccount.html', methods=['GET'])
+def myaccount():
+    return render_template('myaccount.html')
 
 
 @app.route('/cart.html', methods=['GET'])
