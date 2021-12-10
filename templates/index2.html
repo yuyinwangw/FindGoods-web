@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 	<head>
 		<meta charset="utf-8">
-		<title>Home Decoration E-commerce</title>
+		<title>FindGoods</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<!--[if ie]><meta content='IE=8' http-equiv='X-UA-Compatible'/><![endif]-->
@@ -26,7 +26,7 @@
 		<script src="{{url_for('static', filename='js/pagination.js')}}"></script>
 		<!--[if lt IE 9]>			
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-			<script src="js/respond.min.js"></script>
+			<script src="{{url_for('static', filename='js/respond.min.js')}}"></script>
 		<![endif]-->
 		<title>直角分頁頁碼</title>
 		<style type="text/css">
@@ -79,7 +79,7 @@
 				<div class="span8">
 					<div class="account pull-right">
 						<ul class="user-menu">				
-							<li><a href="#">My Account</a></li>
+							<li><a href="myaccount.html">My Account</a></li>
 							<li><a href="cart.html">Cart</a></li>
 							<li><a href="checkout.html">Checkout</a></li>					
 							<li><a href="register.html">Login</a></li>		
@@ -247,10 +247,10 @@
 						</div>
 						<br/>
 						<div class="page-normal">
-							<span class="page-prev">&lt;</span>
+							<a href="index.html"><</a>
 							<!-- 數字1 代表當前頁面-->
-							<span class="page-current">1</span>
-							<a href="index2.html">2</a>
+							<a href="index.html">1</a>
+							<a class="page-current">2</a>
 							<a href="index3.html">3</a>
 							<a href="#">4</a>
 							<a href="#">5</a>
@@ -345,10 +345,10 @@
 <!--														<p class="price">$25.20</p>-->
 <!--													</div>-->
 <!--												</li>-->
-											</ul>
-										</div>
-									</div>							
-								</div>
+<!--											</ul>-->
+<!--										</div>-->
+<!--									</div>							-->
+<!--								</div>-->
 							</div>						
 						</div>
 <!--						<div class="row feature_box">						-->
@@ -409,34 +409,38 @@
 
 			<section id="footer-bar">
 				<div class="row">
-					<div class="span3">
+					<div class="span2"></div>
+					<div class="span5">
 						<h4>Navigation</h4>
 						<ul class="nav">
-							<li><a href="./index.html">Homepage</a></li>  
+							<li><a href="./index.html">Homepage</a></li>
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./contact.html">Contac Us</a></li>
+							<li><a href="./contact.html">Contact Us</a></li>
 							<li><a href="./cart.html">Cart</a></li>
-							<li><a href="./register.html">Login</a></li>							
-						</ul>					
-					</div>
-					<div class="span4">
-						<h4>My Account</h4>
-						<ul class="nav">
-							<li><a href="#">My Account</a></li>
-							<li><a href="#">Order History</a></li>
-							<li><a href="#">Wish List</a></li>
-							<li><a href="#">Newsletter</a></li>
+							<li><a href="./register.html">Login</a></li>
+							<li><a href="myaccount.html">My Account</a></li>
 						</ul>
 					</div>
+<!--					<div class="span4">-->
+<!--						<h4><a href="myaccount.html">My Account</a></h4>-->
+<!--						<ul class="nav">-->
+<!--							<li><a href="myaccount.html">My Account</a></li>-->
+<!--							<li><a href="#">Order History</a></li>-->
+<!--							<li><a href="#">Wish List</a></li>-->
+<!--							<li><a href="#">Newsletter</a></li>-->
+<!--						</ul>-->
+<!--					</div>-->
 					<div class="span5">
 						<p class="logo"><img src="{{url_for('static', filename='img/logo.png')}}" class="site_logo" alt=""></p>
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
 						<br/>
 						<span class="social_icons">
-							<a class="facebook" href="#">Facebook</a>
-							<a class="twitter" href="#">Twitter</a>
-							<a class="skype" href="#">Skype</a>
-							<a class="vimeo" href="#">Vimeo</a>
+							<a class="facebook" href="https://www.facebook.com/oldpig81701"><i class="fab fa-facebook fa-2x"></i></a>
+							<a class="instagram" href="https://www.instagram.com/tsung_yo_chu/"><i class="fab fa-instagram fa-2x"></i></a>
+							<a class="linkedin" href="https://www.linkedin.com/in/joseph-chu-275660180"><i class="fab fa-linkedin fa-2x"></i></a>
+<!--							<a class="twitter" href="#">Twitter</a>-->
+<!--							<a class="skype" href="#">Skype</a>-->
+<!--							<a class="vimeo" href="#">Vimeo</a>-->
 						</span>
 					</div>					
 				</div>	
