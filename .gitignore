@@ -1,3 +1,14 @@
 Mysql_pwd.py
+
+
+# Packages
 .idea
 __pycache__
+
+
+# Virtual environment
+venv/
+
+
+# Environment files
+.env
