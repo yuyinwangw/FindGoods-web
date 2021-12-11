@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify, render_template
-import Mysql_pwd
+from config import config
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_url_path='/static', static_folder='./static')
 # app.register_blueprint(test_controller1, url_prefix='/otherfunctions')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = Mysql_pwd.pwd["pwd"]
+app.config.from_object(config['development'])
 db = SQLAlchemy(app)
+
 
 class Item(db.Model):
     __tablename__ = 'item'
@@ -88,6 +88,7 @@ def contact():
 @app.route('/register.html', methods=['GET'])
 def register():
     return render_template('register.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5000)
