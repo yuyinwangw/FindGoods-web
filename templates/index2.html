@@ -78,11 +78,18 @@
 				</div>
 				<div class="span8">
 					<div class="account pull-right">
-						<ul class="user-menu">				
-							<li><a href="myaccount.html">My Account</a></li>
-							<li><a href="cart.html">Cart</a></li>
-							<li><a href="checkout.html">Checkout</a></li>					
-							<li><a href="register.html">Login</a></li>		
+						<ul class="user-menu">
+							{% if current_user.is_authenticated %}
+								<a>Hi {{ current_user.id }}!</a>
+							{% endif %}
+							<li><a href="./myaccount.html">My Account</a></li>
+<!--							<li><a href="./cart.html">Your Cart</a></li>-->
+<!--							<li><a href="./checkout.html">Checkout</a></li>-->
+							{% if current_user.is_authenticated %}
+								<li><a href="{{ url_for('.logout') }}">Logout</a></li>
+							{% else %}
+								<li><a href="./register.html">Login</a></li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>
@@ -159,10 +166,10 @@
 												<li class="span3">
 													<div class="product-box">
 														<span class="sale_tag"></span>
-														<p><a href="{{i[2]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
+														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[2]) }}" alt="" /></a></p>
 														<p class="itemname"><font face="Courgette" size="1">{{i[1]}}</font></p><br/>
-														<a href="products.html" class="category">Commodo consequat</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														<a href="products.html" class="category">{{i[7]}}, {{i[6]}}</a>
+														<p class="price"><font face="fantasy" size="3">NT${{i[4]}}</font></p>
 													</div>
 												</li>
 												{% endfor %}
@@ -200,10 +207,10 @@
 												<li class="span3">
 													<div class="product-box">
 														<span class="sale_tag"></span>
-														<p><a href="{{i[2]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
+														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[2]) }}" alt="" /></a></p>
 														<p class="itemname"><font face="Courgette" size="1">{{i[1]}}</font></p><br/>
-														<a href="products.html" class="category">Commodo consequat</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														<a href="products.html" class="category">{{i[7]}}, {{i[6]}}</a>
+														<p class="price"><font face="fantasy" size="3">NT${{i[4]}}</font></p>
 													</div>
 												</li>
 												{% endfor %}
@@ -414,11 +421,11 @@
 						<h4>Navigation</h4>
 						<ul class="nav">
 							<li><a href="./index.html">Homepage</a></li>
+							<li><a href="./myaccount.html">My Account</a></li>
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./contact.html">Contact Us</a></li>
-							<li><a href="./cart.html">Cart</a></li>
-							<li><a href="./register.html">Login</a></li>
-							<li><a href="myaccount.html">My Account</a></li>
+<!--							<li><a href="./contact.html">Contact Us</a></li>-->
+<!--							<li><a href="./cart.html">Cart</a></li>-->
+<!--							<li><a href="./register.html">Login</a></li>-->
 						</ul>
 					</div>
 <!--					<div class="span4">-->
