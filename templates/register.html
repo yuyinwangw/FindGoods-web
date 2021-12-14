@@ -36,11 +36,18 @@
 				</div>
 				<div class="span8">
 					<div class="account pull-right">
-						<ul class="user-menu">				
-							<li><a href="myaccount.html">My Account</a></li>
-							<li><a href="cart.html">Your Cart</a></li>
-							<li><a href="checkout.html">Checkout</a></li>					
-							<li><a href="register.html">Login</a></li>		
+						<ul class="user-menu">
+							{% if current_user.is_authenticated %}
+								<a>Hi {{ current_user.id }}!</a>
+							{% endif %}
+							<li><a href="./myaccount.html">My Account</a></li>
+<!--							<li><a href="./cart.html">Your Cart</a></li>-->
+<!--							<li><a href="./checkout.html">Checkout</a></li>-->
+							{% if current_user.is_authenticated %}
+								<li><a href="{{ url_for('.logout') }}">Logout</a></li>
+							{% else %}
+								<li><a href="./register.html">Login</a></li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>
@@ -78,21 +85,42 @@
 				<div class="row">
 					<div class="span5">					
 						<h4 class="title"><span class="text"><strong>Login</strong> Form</span></h4>
-						<form action="#" method="post">
+						<form action="./register.html" method="post">
+							{{ loginform.hidden_tag() }}
 							<input type="hidden" name="next" value="/">
 							<fieldset>
 								<div class="control-group">
-									<label class="control-label">Username</label>
+									<label class="control-label">Username:</label>
 									<div class="controls">
-										<input type="text" placeholder="Enter your username" id="username" class="input-xlarge">
+<!--										<input type="text" placeholder="Enter your username" name="username" class="input-xlarge">-->
+										{{ loginform.username(class="input-xlarge",placeholder='Enter Your Username') }}
+										{% if loginform.username.errors %}
+											{% for error in loginform.username.errors %}
+												{{ error }}
+											{% endfor %}
+										{% endif %}
 									</div>
 								</div>
 								<div class="control-group">
-									<label class="control-label">Username</label>
+									<label class="control-label">Password:</label>
 									<div class="controls">
-										<input type="password" placeholder="Enter your password" id="password" class="input-xlarge">
+<!--										<input type="password" placeholder="Enter your password" name="password" class="input-xlarge">-->
+										{{ loginform.password(class="input-xlarge",placeholder='Enter Your Password')}}
 									</div>
 								</div>
+								<div class="control-group">
+									<div class="controls">
+										{{ loginform.remember_me(class="input-xlarge") }}
+										<label class="control-label">Remember me</label>
+									</div>
+								</div>
+								{% with messages = get_flashed_messages() %}
+									{% if messages %}
+										{% for message in messages %}
+											<a>{{ message }}</a>
+										{% endfor %}
+									{% endif %}
+								{% endwith %}
 								<div class="control-group">
 									<input tabindex="3" class="btn btn-inverse large" type="submit" value="Sign into your account">
 									<hr>
@@ -103,31 +131,68 @@
 					</div>
 					<div class="span7">					
 						<h4 class="title"><span class="text"><strong>Register</strong> Form</span></h4>
-						<form action="#" method="post" class="form-stacked">
+						<form action="./register.html" method="post" class="form-stacked">
+							{{ reform.hidden_tag() }}
 							<fieldset>
 								<div class="control-group">
-									<label class="control-label">Username</label>
+									<label class="control-label">Username:</label>
 									<div class="controls">
-										<input type="text" placeholder="Enter your username" class="input-xlarge">
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label">Email address:</label>
-									<div class="controls">
-										<input type="password" placeholder="Enter your email" class="input-xlarge">
+<!--										<input type="text" placeholder="Enter your username" class="input-xlarge">-->
+										{{ reform.username_r(class="input-xlarge",placeholder='Enter Your Username') }}
 									</div>
 								</div>
 								<div class="control-group">
 									<label class="control-label">Password:</label>
 									<div class="controls">
-										<input type="password" placeholder="Enter your password" class="input-xlarge">
+<!--										<input type="password" placeholder="Enter your password" class="input-xlarge">-->
+										{{ reform.password_r(class="input-xlarge",placeholder='Enter Your Password') }}
 									</div>
-								</div>							                            
+								</div>
 								<div class="control-group">
-									<p>Now that we know who you are. I'm not a mistake! In a comic, you know how you can tell who the arch-villain's going to be?</p>
+									<label class="control-label">Email address:</label>
+									<div class="controls">
+<!--										<input type="password" placeholder="Enter your email" class="input-xlarge">-->
+										{{ reform.email(class="input-xlarge",placeholder='Enter Your Email') }}
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Sex:</label>
+									<div class="controls">
+										{{ reform.sex(class="input-xlarge") }}
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Age:</label>
+									<div class="controls">
+										{{ reform.age(class="input-xlarge",placeholder='Enter Your Age') }}
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Area:</label>
+									<div class="controls">
+										{{ reform.area(class="input-xlarge") }}
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Career:</label>
+									<div class="controls">
+										{{ reform.career(class="input-xlarge",placeholder='Enter Your Career') }}
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										{{ reform.remember_me_r(class="input-xlarge") }}
+										<label class="control-label">Remember me</label>
+									</div>
+								</div>
+								<div class="control-group">
+									<p>Let's enjoy it!!</p>
 								</div>
 								<hr>
-								<div class="actions"><input tabindex="9" class="btn btn-inverse large" type="submit" value="Create your account"></div>
+								<div class="actions">
+<!--									<input tabindex="9" class="btn btn-inverse large" type="submit" value="Create your account">-->
+									{{ reform.submit_r(tabindex="9", class="btn btn-inverse large", value="Create your account") }}
+								</div>
 							</fieldset>
 						</form>					
 					</div>				
@@ -140,11 +205,11 @@
 						<h4>Navigation</h4>
 						<ul class="nav">
 							<li><a href="./index.html">Homepage</a></li>
+							<li><a href="./myaccount.html">My Account</a></li>
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./contact.html">Contact Us</a></li>
-							<li><a href="./cart.html">Cart</a></li>
-							<li><a href="./register.html">Login</a></li>
-							<li><a href="myaccount.html">My Account</a></li>
+<!--							<li><a href="./contact.html">Contact Us</a></li>-->
+<!--							<li><a href="./cart.html">Cart</a></li>-->
+<!--							<li><a href="./register.html">Login</a></li>-->
 						</ul>
 					</div>
 					<div class="span5">

@@ -285,7 +285,8 @@ section.navbar{
 	filter: none;	
 }
 .navbar-inner.main-menu a.logo{
-	position:absolute;
+	position:relative;
+	top: 10px;
 }
 .navbar-inner.main-menu ul ul a{
 	font-size:13px;
