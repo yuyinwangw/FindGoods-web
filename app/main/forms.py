@@ -16,9 +16,9 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     username_r = StringField('What is your name?', validators=[Length(min=1, max=12, message='Not Null'), DataRequired(message='Not Null')])
     password_r = PasswordField('password', validators=[Length(min=4, max=12, message='Not Null'), DataRequired(message='Not Null')])
-    email = EmailField('What is your name?', validators=[Length(min=1, max=12, message='Not Null'), DataRequired(message='Not Null')])
+    email = EmailField('What is your name?', validators=[DataRequired(message='Not Null')])
     sex = SelectField(u'Sex', choices=[('male', '男'), ('female', '女')], validators=[DataRequired(message='Not Null')])
-    age = IntegerField(u'Age', validators=[Length(min=1, max=3, message='Not Null'), DataRequired(message='Not Null')])
+    age = StringField(u'Age', validators=[Length(min=1, max=3, message='Not Null'), DataRequired(message='Not Null')])
     area = SelectField(u'Area', choices=[('Taipei', '台北市'), ('New_Taipei', '新北市'), ('Keelung', '基隆市')])
     career = StringField(u'Career', validators=[Length(min=1, max=10, message='Not Null'), DataRequired(message='Not Null')])
     remember_me_r = BooleanField('Keep me logged in')
