@@ -31,14 +31,14 @@
 			<div class="row">
 				<div class="span4">
 					<form method="POST" class="search_form">
-						<input type="text" class="input-block-level search-query" Placeholder="eg. T-sirt">
+						<input type="text" class="input-block-level search-query" Placeholder="Search...">
 					</form>
 				</div>
 				<div class="span8">
 					<div class="account pull-right">
 						<ul class="user-menu">
 							{% if current_user.is_authenticated %}
-								<a>Hi {{ current_user.id }}!</a>
+								<a>Hi {{ username }}!</a>
 							{% endif %}
 							<li><a href="./myaccount.html">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
@@ -86,113 +86,104 @@
 					<div class="span12">
 						<div class="accordion" id="accordion2">
 							<div class="accordion-group">
+								{% if current_user.is_authenticated %}
 								<div class="accordion-heading">
-									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2">Your Account</a>
+									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2">My Account</a>
 								</div>
 								<div class="accordion-body in collapse">
 									<div class="accordion-inner">
 										<div class="row-fluid">
 											<div class="span6">
-												<h4>Your Personal Details</h4>
+<!--												<h2>My Information</h2>-->
+												{% for i in userInfo %}
 												<div class="control-group">
-													<label class="control-label">First Name</label>
+													<label class="control-label"><h3>{{ i[0] }}</h3></label>
 													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
+														<font color="darkorange"><h5>{{ i[1] }}</h5></font>
 													</div>
 												</div>
-												<div class="control-group">
-													<label class="control-label">Last Name</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label">Email Address</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label">Telephone</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label">Fax</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
+												{% endfor %}
 											</div>
 											<div class="span6">
-												<h4>Your Address</h4>
-												<div class="control-group">
-													<label class="control-label">Company</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label">Company ID:</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label"><span class="required">*</span> Address 1:</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label">Address 2:</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label"><span class="required">*</span> City:</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label"><span class="required">*</span> Post Code:</label>
-													<div class="controls">
-														<input type="text" placeholder="" class="input-xlarge">
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label"><span class="required">*</span> Country:</label>
-													<div class="controls">
-														<select class="input-xlarge">
-															<option value="1">Afghanistan</option>
-															<option value="2">Albania</option>
-															<option value="3">Algeria</option>
-															<option value="4">American Samoa</option>
-															<option value="5">Andorra</option>
-															<option value="6">Angola</option>
-														</select>
-													</div>
-												</div>
-												<div class="control-group">
-													<label class="control-label"><span class="required">*</span> Region / State:</label>
-													<div class="controls">
-														<select name="zone_id" class="input-xlarge">
-															<option value=""> --- Please Select --- </option>
-															<option value="3513">Aberdeen</option>
-															<option value="3514">Aberdeenshire</option>
-															<option value="3515">Anglesey</option>
-															<option value="3516">Angus</option>
-															<option value="3517">Argyll and Bute</option>
-														</select>
-													</div>
-												</div>
+<!--												<h2>Your Personal Details</h2>-->
+<!--												{% for i in userInfo %}-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><h3>{{ i[0] }}</h3></label>-->
+<!--													<div class="controls">-->
+<!--														<font color="darkorange"><h5>{{ i[1] }}</h5></font>-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												{% endfor %}-->
+<!--												<h4>Your Address</h4>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label">Company</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label">Company ID:</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><span class="required">*</span> Address 1:</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label">Address 2:</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><span class="required">*</span> City:</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><span class="required">*</span> Post Code:</label>-->
+<!--													<div class="controls">-->
+<!--														<input type="text" placeholder="" class="input-xlarge">-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><span class="required">*</span> Country:</label>-->
+<!--													<div class="controls">-->
+<!--														<select class="input-xlarge">-->
+<!--															<option value="1">Afghanistan</option>-->
+<!--															<option value="2">Albania</option>-->
+<!--															<option value="3">Algeria</option>-->
+<!--															<option value="4">American Samoa</option>-->
+<!--															<option value="5">Andorra</option>-->
+<!--															<option value="6">Angola</option>-->
+<!--														</select>-->
+<!--													</div>-->
+<!--												</div>-->
+<!--												<div class="control-group">-->
+<!--													<label class="control-label"><span class="required">*</span> Region / State:</label>-->
+<!--													<div class="controls">-->
+<!--														<select name="zone_id" class="input-xlarge">-->
+<!--															<option value=""> -&#45;&#45; Please Select -&#45;&#45; </option>-->
+<!--															<option value="3513">Aberdeen</option>-->
+<!--															<option value="3514">Aberdeenshire</option>-->
+<!--															<option value="3515">Anglesey</option>-->
+<!--															<option value="3516">Angus</option>-->
+<!--															<option value="3517">Argyll and Bute</option>-->
+<!--														</select>-->
+<!--													</div>-->
+<!--												</div>-->
 											</div>
 										</div>
 									</div>
 								</div>
+								{% else %}
+								<center><h1><span>You haven't log in</span></h1></center>
+								{% endif %}
 							</div>
 						</div>
 					</div>
