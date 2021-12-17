@@ -1,5 +1,4 @@
 import os
-# from flask import Flask, request, jsonify, render_template, url_for, redirect
 from app.models import Item, Plform
 from app import create_app, db
 

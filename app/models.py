@@ -1,6 +1,13 @@
+from flask import current_app
+from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from . import db, login_manager
+
+
+# class User(UserMixin):
+#     pass
 
 
 class Plform(db.Model):
@@ -31,17 +38,17 @@ class Item(db.Model):
         return "<Item %s>" % self.ItemName
 
 
-class Userdetail(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(10), primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(64), unique=True, index=True)
     sex = db.Column(db.String(8))
     age = db.Column(db.SmallInteger)
     area = db.Column(db.String(128))
-    careeer = db.Column(db.String(128))
+    career = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
 
     @property
@@ -55,6 +62,24 @@ class Userdetail(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+class AnonymousUser(AnonymousUserMixin):
+    def is_administrator(self):
+        return False
+
+
+login_manager.anonymous_user = AnonymousUser
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    # user_test = User()
+    # user_test.id = user_id
+    return User.query.get(user_id)
 
