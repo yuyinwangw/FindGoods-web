@@ -1,5 +1,6 @@
 from flask import render_template, redirect, url_for, session, flash
 from flask_login import login_user, current_user, login_required, logout_user
+from sqlalchemy.orm import load_only
 from . import main
 from .forms import LoginForm, RegisterForm
 from .. import db
@@ -9,7 +10,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-users = {'JOJO': {'password': 'jojo'}}
+# users = {'JOJO': {'password': 'jojo'}}
 
 
 # @main.route('/protected')
@@ -32,21 +33,35 @@ def register():
     loginform = LoginForm()
     reform = RegisterForm()
     if reform.validate_on_submit():
-        first_data = User.query.order_by(User.id.desc()).first()
-        new_id = str(int(first_data.id)+1).zfill(4)
-        user = User(id=new_id,
-                    email=reform.email.data.lower(),
-                    username=reform.username_r.data,
-                    password=reform.password_r.data,
-                    sex=reform.sex.data,
-                    age=reform.age.data,
-                    area=reform.area.data,
-                    career=reform.career.data)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user, reform.remember_me_r.data)
-        print(session)
-        return redirect(url_for('.index'))
+        users = [d.username for d in User.query.options(load_only(User.username))]
+        # print(len(users))
+        if reform.username_r.data not in users:
+            if len(users) == 0:
+                user = User(id="1".zfill(4),
+                            email=reform.email.data.lower(),
+                            username=reform.username_r.data,
+                            password=reform.password_r.data,
+                            sex=reform.sex.data,
+                            age=reform.age.data,
+                            area=reform.area.data,
+                            career=reform.career.data)
+            else:
+                first_data = User.query.order_by(User.id.desc()).first()
+                new_id = str(int(first_data.id)+1).zfill(4)
+                user = User(id=new_id,
+                            email=reform.email.data.lower(),
+                            username=reform.username_r.data,
+                            password=reform.password_r.data,
+                            sex=reform.sex.data,
+                            age=reform.age.data,
+                            area=reform.area.data,
+                            career=reform.career.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, reform.remember_me_r.data)
+            print(session)
+            return redirect(url_for('.index'))
+        flash('Username has been used!')
 
     elif loginform.validate_on_submit():
         user = User.query.filter_by(username=loginform.username.data).first()
