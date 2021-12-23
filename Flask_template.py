@@ -1,5 +1,5 @@
 import os
-from app.models import Item, Plform
+from app.models import Item, Plform, User
 from app import create_app, db
 
 
@@ -9,7 +9,7 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, Item=Item, Plform=Plform)
+    return dict(db=db, Item=Item, Plform=Plform, User=User)
 
 
 # @app.cli.command()
@@ -20,5 +20,5 @@ def make_shell_context():
 #     unittest.TextTestRunner(verbosity=2).run(tests)
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='0.0.0.0', port=5000)
 
