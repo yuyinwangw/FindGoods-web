@@ -16,7 +16,6 @@ class Plform(db.Model):
     PFNo = db.Column(db.String(10), primary_key=True, nullable=False)
     PFName = db.Column(db.String(60), nullable=False)
     item = relationship("Item", backref=backref('plform', order_by=PFNo))
-
     def __repr__(self):
         return "<Plate Form Name %s>" % self.PFName
 
@@ -24,8 +23,8 @@ class Plform(db.Model):
 class Item(db.Model):
     __tablename__ = 'item'
 
-    ItemNo = db.Column(db.String(10), primary_key=True, nullable=False)
-    ItemName = db.Column(db.String(60), nullable=False)
+    ItemNo = db.Column(db.String(11), primary_key=True, nullable=False)
+    ItemName = db.Column(db.String(100), nullable=False)
     PFNo = db.Column(db.SmallInteger, db.ForeignKey('plform.PFName'))
     ItemID = db.Column(db.SmallInteger, nullable=False)
     Price = db.Column(db.Float)
@@ -33,7 +32,7 @@ class Item(db.Model):
     Cate = db.Column(db.String(45))
     URL = db.Column(db.Text, nullable=False)
     IMG_Path = db.Column(db.Text, nullable=False)
-
+    TAGS = db.Column(db.String(100))
     def __repr__(self):
         return "<Item %s>" % self.ItemName
 

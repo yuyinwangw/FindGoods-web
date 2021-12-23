@@ -5,6 +5,10 @@ from . import main
 from .forms import LoginForm, RegisterForm
 from .. import db
 from ..models import Item, Plform, User
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 # users = {'JOJO': {'password': 'jojo'}}
 
@@ -18,6 +22,10 @@ from ..models import Item, Plform, User
 #     #  current_user確實的取得了登錄狀態
 #     if current_user.is_active:
 #         return 'Logged in as: ' + current_user.id + 'Login is_active:True'
+
+
+
+
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -83,11 +91,22 @@ def index():
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in
-                db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo).filter(Plform.PFName == 'IKEA')]
-    for i, data in enumerate(dataInfo):
-        dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
-    return render_template('index.html', dataInfo=dataInfo, username=username)
+    tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+    dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
+    info = {}
+    for i in tags:
+        if i not in info.items():
+            info[i]=list()
+        for data in dataInfo:
+            if data[5]==i:
+                info[i].append(data)
+    # print(info['vasesbowl'])
+
+
+    # print(tags[0])
+    # print(dataInfo[0])
+    # dataInfo = []
+    return render_template('index.html', dataInfo=info, username=username, tags=tags)
 
 
 @main.route('/index2.html', methods=['GET'])
@@ -97,11 +116,52 @@ def index2():
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo).filter(Plform.PFName == 'IKEA')]
+    dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo)]
     for i, data in enumerate(dataInfo):
         dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
+    dataInfo = []
+
     return render_template('index2.html', dataInfo=dataInfo, username=username)
 
+#冷啟動，此用者偏好選單
+@main.route('/main_select')
+def index3():
+    dataInfo = []
+    return render_template('main_select.html', dataInfo=dataInfo)
+
+#content-base推薦
+@main.route('/recommend/<itemid>')
+def recommend(itemid):
+    data = [[d.ItemID ,d.Cate]  for d in db.session.query(Item)]
+    df2 = pd.DataFrame(data, columns=['title','keywords'])
+    count = CountVectorizer()
+    count_matrix = count.fit_transform(df2['keywords'])
+
+    cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
+    indices = pd.Series(df2.index, index=df2['title'])
+    # print(indices)
+    # user_select = [[d.ItemID, d.Cate] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
+    userselect = [[d.ItemNo,d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID == itemid)]
+    def get_recommendations(itemid, n = 10, cosine_sim=cosine_sim2):
+        ikea = []
+        if itemid not in indices.index:
+            print("furniture not in database.")
+            return
+        else:
+            idx = indices[itemid]
+        # cosine similarity scores of movies in descending order
+        scores = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
+        # top n most similar movies indexes
+        # use 1:n because 0 is the same movie entered
+        top_n_idx = list(scores.iloc[1:n].index)
+        return df2['title'].iloc[top_n_idx]
+    recomItem = get_recommendations(int(itemid), n=9, cosine_sim=cosine_sim2).values.tolist()
+    # print(tuple(recomItem))
+    # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
+    dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
+    # print(dataInfo)
+    # dataInfo = []
+    return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
 
 @main.route('/myaccount.html', methods=['GET'])
 def myaccount():
