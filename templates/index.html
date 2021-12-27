@@ -119,11 +119,11 @@
 					</nav>
 				</div>
 			</section>
-			<!-- <section  class="homepage-slider" id="home-slider">
-				<div class="flexslider">
-					<ul class="slides">
-						<li>
-							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_16266865612013271036.jpeg" alt="" />
+<!--			<section  class="homepage-slider" id="home-slider">-->
+<!--				<div class="flexslider">-->
+<!--					<ul class="slides">-->
+<!--						<li>-->
+<!--							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_16266865612013271036.jpeg" alt="" />-->
 <!--							<div class="intro">-->
 <!--								<h1>Mid season sale</h1>-->
 <!--								<p><span>Up to 50% Off</span></p>-->
@@ -147,17 +147,13 @@
 				<br/>Don't miss to share your preference for home design with us. We're sure that our recommendation system won't let you down.
 			</section> -->
 			{% for tag in tags %}
-			
 			<section class="main-content">
 				<div class="row">
 					<div class="span12">													
 						<div class="row">
-							
 							<div class="span12">
-								
 								<h4 class="title">
 									<span class="pull-left"><span class="text"><span class="line">Feature <strong>{{tag}}</strong></span></span></span>
-									
 									<span class="pull-right">
 										<a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
 									</span>
@@ -166,61 +162,33 @@
 									<div class="carousel-inner">
 										<div class="active item">
 											<ul class="thumbnails">
-<!--												插入迴圈-->
-													{% for i in dataInfo[tag][0:4] %}
-													<li class="span3">
-														<div class="product-box">
-															<span class="sale_tag"></span>
-															<p><a href="index2.html"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
-															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-															<a href="products.html" class="category"> {{i[5]}}</a>
-															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-														</div>
-													</li>
+												{% for i in dataInfo[tag][0:4] %}
+												<li class="span3">
+													<div class="product-box">
+														<span class="sale_tag"></span>
+														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
+														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+														<a href="products.html" class="category"> {{i[5]}}</a>
+														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+													</div>
+												</li>
 												{% endfor %}
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<span class="sale_tag"></span>-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/2.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Quis nostrud exerci tation</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$32.50</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/3.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Know exactly turned</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$14.20</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/4.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">You think fast</a><br/>-->
-<!--														<a href="products.html" class="category">World once</a>-->
-<!--														<p class="price">$31.45</p>-->
-<!--													</div>-->
-<!--												</li>-->
 											</ul>
 										</div>
 										<div class="item">
 											<ul class="thumbnails">
 <!--												插入迴圈-->
 												{% for i in dataInfo[tag][4:8] %}
-													<li class="span3">
-														<div class="product-box">
-															<span class="sale_tag"></span>
-															<p><a href="{{i[3]}}"><img src="{{ i[1]}}" alt="" /></a></p>
-															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-															<a href="products.html" class="category">{{i[6]}}</a>
-															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-														</div>
-													</li>
+												<li class="span3">
+													<div class="product-box">
+														<span class="sale_tag"></span>
+														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
+														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+														<a href="products.html" class="category">{{i[5]}}</a>
+														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+													</div>
+												</li>
 												{% endfor %}
-								
-
 <!--												<li class="span3">-->
 <!--													<div class="product-box">-->
 <!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/5.jpg')}}" alt="" /></a></p>-->
@@ -278,7 +246,6 @@
 <!--							<a href="#">20</a>-->
 							<a href="#">&gt;</a>
 						</div>
-					{%endfor%}
 						<!-- <div class="row">
 							<div class="span12">
 								<h4 class="title">
@@ -364,8 +331,8 @@
 <!--										</div>-->
 <!--									</div>							-->
 <!--								</div>-->
-							</div>						
-						</div>
+<!--							</div>						-->
+<!--						</div>-->
 <!--						<div class="row feature_box">						-->
 <!--							<div class="span4">-->
 <!--								<div class="service">-->
@@ -398,6 +365,7 @@
 					</div>
 				</div>
 			</section>
+			{%endfor%}
 <!--			<section class="our_client">-->
 <!--				<h4 class="title"><span class="text">Manufactures</span></h4>-->
 <!--				<div class="row">					-->
