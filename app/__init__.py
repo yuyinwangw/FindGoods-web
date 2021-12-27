@@ -15,7 +15,7 @@ def create_app(config_name):
     app = Flask(__name__, static_folder='../static', template_folder='../templates')
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
-    print(app.config)
+    # print(app.config)
 
     mail.init_app(app)
     db.init_app(app)
