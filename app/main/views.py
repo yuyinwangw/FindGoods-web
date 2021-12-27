@@ -1,17 +1,19 @@
-from flask import render_template, redirect, url_for, session, flash
+from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.orm import load_only
+import app
 from . import main
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db
 from ..models import Item, Plform, User
+import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# users = {'JOJO': {'password': 'jojo'}}
-
+# def allowed_file(filename):
+#     return '.' in filename and filename.lower().rsplit('.', 1)[1] in ('txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif')
 
 # @main.route('/protected')
 # @login_required
@@ -22,10 +24,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 #     #  current_user確實的取得了登錄狀態
 #     if current_user.is_active:
 #         return 'Logged in as: ' + current_user.id + 'Login is_active:True'
-
-
-
-
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -91,16 +89,18 @@ def index():
         username = user.username
     else:
         username = ''
-    tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+    tags = ('vasesbowl','frames','lamps','footstool','Cushion','mugs','desk')
     dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
     info = {}
+    # for i, data in enumerate(dataInfo):
+    #     dataInfo[i][1] = ("img/ikea_photos/" + data[0] + "_1.jpg")
     for i in tags:
         if i not in info.items():
             info[i]=list()
         for data in dataInfo:
             if data[5]==i:
                 info[i].append(data)
-    # print(info['vasesbowl'])
+    # print(info['frames'])
 
 
     # print(tags[0])
@@ -117,9 +117,9 @@ def index2():
     else:
         username = ''
     dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo)]
-    for i, data in enumerate(dataInfo):
-        dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
-    dataInfo = []
+    # for i, data in enumerate(dataInfo):
+    #     dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
+    # dataInfo = []
 
     return render_template('index2.html', dataInfo=dataInfo, username=username)
 
@@ -163,6 +163,7 @@ def recommend(itemid):
     # dataInfo = []
     return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
 
+
 @main.route('/myaccount.html', methods=['GET'])
 def myaccount():
     if current_user.is_authenticated:
@@ -176,15 +177,6 @@ def myaccount():
             userInfo.append(["Age", d.age])
             userInfo.append(["Living Place", d.area])
             userInfo.append(["Occupation", d.career])
-
-        # userInfo = [d.username, d.email for d in User.query.filter(User.id == current_user.id)]
-        # dict = {}
-        # dict["Username"] = userInfo[0][0]
-        # dict["Email"] = userInfo[0][1]
-        # dict["Sex"] = userInfo[0][2]
-        # dict["Age"] = userInfo[0][3]
-        # dict["Living Place"] = userInfo[0][4]
-        # dict["Occupation"] = userInfo[0][5]
     else:
         username = ''
         userInfo = ''
@@ -201,14 +193,29 @@ def product():
     return render_template('products.html', username=username)
 
 
-@main.route('/search.html', methods=['GET'])
+@main.route('/search.html', methods=['GET', 'POST'])
 def search():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
     else:
         username = ''
-    return render_template('search.html', username=username)
+    imgform = PhotoForm()
+    print(imgform.image.data)
+    print(app.config['default'].UPLOAD_FOLDER)
+    if imgform.validate_on_submit():
+        image = imgform.image.data
+        print(image)
+        filename = image.filename
+        print(filename)
+        image.save(os.path.join(app.config['default'].UPLOAD_FOLDER, filename))
+        uploadfile_path = 'img/uploads/' + filename
+        print(uploadfile_path)
+        return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform)
+    elif imgform.errors:
+        print("error")
+        flash(imgform.errors['image'][0])
+    return render_template('search.html', username=username, imgform=imgform)
 
 
 @main.route('/trend.html', methods=['GET'])
