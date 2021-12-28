@@ -94,19 +94,24 @@ def index():
     return render_template('index.html', dataInfo=info, username=username, tags=tags)
 
 
-@main.route('/index2.html', methods=['GET'])
+@main.route('/index2_1.html', methods=['GET'])
 def index2():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo)]
-    for i, data in enumerate(dataInfo):
-        dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
-    dataInfo = []
+    tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+    dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
+    info = {}
+    for i in tags:
+        if i not in info.items():
+            info[i]=list()
+        for data in dataInfo:
+            if data[5]==i:
+                info[i].append(data)
 
-    return render_template('index2.html', dataInfo=dataInfo, username=username)
+    return render_template('index2_1.html', dataInfo=info, username=username, tags=tags)
 
 #冷啟動，此用者偏好選單
 @main.route('/main_select')
@@ -117,7 +122,7 @@ def index3():
 #content-base推薦
 @main.route('/recommend/<itemid>')
 def recommend(itemid):
-    data = [[d.ItemID ,d.Cate]  for d in db.session.query(Item)]
+    data = [[d.ItemID ,d.TAGS]  for d in db.session.query(Item)]
     df2 = pd.DataFrame(data, columns=['title','keywords'])
     count = CountVectorizer()
     count_matrix = count.fit_transform(df2['keywords'])
@@ -140,7 +145,7 @@ def recommend(itemid):
         # use 1:n because 0 is the same movie entered
         top_n_idx = list(scores.iloc[1:n].index)
         return df2['title'].iloc[top_n_idx]
-    recomItem = get_recommendations(int(itemid), n=9, cosine_sim=cosine_sim2).values.tolist()
+    recomItem = get_recommendations(int(itemid), n=5, cosine_sim=cosine_sim2).values.tolist()
     # print(tuple(recomItem))
     # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
     dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
