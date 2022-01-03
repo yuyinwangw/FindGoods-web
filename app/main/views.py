@@ -91,6 +91,7 @@ def index():
         username = ''
     tags = ('vasesbowl','frames','lamps','footstool','Cushion','mugs','desk')
     dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
+    # dataInfo = []
     info = {}
     # for i, data in enumerate(dataInfo):
     #     dataInfo[i][1] = ("img/ikea_photos/" + data[0] + "_1.jpg")
