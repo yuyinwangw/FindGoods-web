@@ -3,11 +3,10 @@ from flask_login import login_user, current_user, login_required, logout_user
 from . import main
 from .forms import LoginForm, RegisterForm
 from .. import db
-from ..models import Item, Plform, User
+from ..models import Item, Plform, User, Recomm
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from .CUB import recommend_movies
 
 users = {'JOJO': {'password': 'jojo'}}
 
@@ -73,48 +72,80 @@ def logout():
 def index():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
+
+        theid = (user.id.strip('0'))
         username = user.username
+        tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i]=list()
+            for data in dataInfo:
+                if data[5]==i:
+                    info[i].append(data)
+
+        recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in db.session.query(Recomm).filter(Recomm.userId == theid)]
+        # print(recdata[0])
+        result = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID.in_(recdata[0]))]
+        print(result)
+        return render_template('index2_1.html', dataInfo=info, username=username, tags=tags, recdata=result[:8])
     else:
         username = ''
-    tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
-    dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
-    info = {}
-    for i in tags:
-        if i not in info.items():
-            info[i]=list()
-        for data in dataInfo:
-            if data[5]==i:
-                info[i].append(data)
-    # print(info['vasesbowl'])
+        # print(session)
+        tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i]=list()
+            for data in dataInfo:
+                if data[5]==i:
+                    info[i].append(data)
+        # print(info['vasesbowl'])
 
 
-    # print(tags[0])
-    # print(dataInfo[0])
-    # dataInfo = []
-    return render_template('index.html', dataInfo=info, username=username, tags=tags)
+        # print(tags[0])
+        # print(dataInfo[0])
+        # dataInfo = []
+        return render_template('index.html', dataInfo=info, username=username, tags=tags)
 
 
-@main.route('/index2_1.html/<userId>', methods=['GET'])
-def index2(userId):
+@main.route('/index2_1.html', methods=['GET'])
+def index2():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
+
+        theid = (user.id.strip('0'))
         username = user.username
+        tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i]=list()
+            for data in dataInfo:
+                if data[5]==i:
+                    info[i].append(data)
+
+        recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in db.session.query(Recomm).filter(Recomm.userId == theid)]
+        # print(recdata[0])
+        result = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID.in_(recdata[0]))]
+        print(result)
+        return render_template('index2_1.html', dataInfo=info, username=username, tags=tags, recdata=result[:8])
     else:
         username = ''
-    tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
-    dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
-    info = {}
-    for i in tags:
-        if i not in info.items():
-            info[i]=list()
-        for data in dataInfo:
-            if data[5]==i:
-                info[i].append(data)
-    data = recommend_movies(int(userId),8)
-    recdata = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID.in_(data))]
-    # print(recdata)
-    return render_template('index2_1.html', dataInfo=info, username=username, tags=tags, recdata=recdata)
-
+        tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i]=list()
+            for data in dataInfo:
+                if data[5]==i:
+                    info[i].append(data)
+        return render_template('index.html', dataInfo=info, username=username, tags=tags)
+        
 #冷啟動，此用者偏好選單
 @main.route('/main_select')
 def index3():
@@ -133,7 +164,7 @@ def recommend(itemid):
     indices = pd.Series(df2.index, index=df2['title'])
     # print(indices)
     # user_select = [[d.ItemID, d.Cate] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
-    userselect = [[d.ItemNo,d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID == itemid)]
+    userselect = [[d.ItemNo,d.ItemID, d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID == itemid)]
     def get_recommendations(itemid, n = 10, cosine_sim=cosine_sim2):
         ikea = []
         if itemid not in indices.index:
@@ -150,7 +181,7 @@ def recommend(itemid):
     recomItem = get_recommendations(int(itemid), n=5, cosine_sim=cosine_sim2).values.tolist()
     # print(tuple(recomItem))
     # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
-    dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
+    dataInfo = [[d.ItemID, d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
     # print(dataInfo)
     # dataInfo = []
     return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
