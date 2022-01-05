@@ -248,6 +248,7 @@ def about():
         username = ''
     return render_template('about.html', username=username)
 
+
 # @main.route('/cart.html', methods=['GET'])
 # def cart():
 #     if 'username' in session.keys():

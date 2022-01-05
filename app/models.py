@@ -20,6 +20,7 @@ class Plform(db.Model):
     def __repr__(self):
         return "<Plate Form Name %s>" % self.PFName
 
+
 class Recomm(db.Model):
     __tablename__ = 'recomm'
 
@@ -37,6 +38,7 @@ class Recomm(db.Model):
     
     def __repr__(self):
         return "<Recomm Form Name %s>" % self.Recomm
+
 
 class Item(db.Model):
     __tablename__ = 'item'
