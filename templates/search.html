@@ -38,7 +38,7 @@
 					<div class="account pull-right">
 						<ul class="user-menu">
 							{% if current_user.is_authenticated %}
-								<a>Hi {{ username }}!</a>
+								<li><a><font color="#eb4800">Hi {{ username }}!</font></a></li>
 							{% endif %}
 							<li><a href="./myaccount.html">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
@@ -108,11 +108,31 @@
 					<div class="span6">
 						<h4 class="title"><span class="text"><strong>Analysis</strong> Result</span></h4>
 						{% if imgform.validate_on_submit() %}
-							<img src="{{ url_for('static', filename=uploadfile_path) }}">
+							{% if p %}
+<!--								{% for message in messages %}-->
+									<h3><font color="#eb4800">{{ pre_item }}</font>  {{ pre_acc }}</h3>
+									<div class="product-box">
+										<span class="sale_tag"></span>
+										<p><a href="{{p[0]}}"><img src="{{ url_for('static', filename=p[1]) }}" alt="" /></a></p>
+										<p class="itemname"><font face="Courgette" size="1">{{p[2]}}</font></p><br/>
+										<a href="products.html" class="category"> {{pre_item}}</a>
+										<p class="price"><font face="fantasy" size="3">NT${{p[3]}}</font></p>
+									</div>
+									<br>
+<!--								{% endfor %}-->
+							{% else %}
+								<h3><font color="#eb4800">None</font>Result</h3>
+							{% endif %}
 						{% endif %}
-						<br>
-						{% if imgform.validate_on_submit() %}
-							<img src="{{ url_for('static', filename=uploadfile_path) }}">
+						{% if imgform.validate_on_submit() and p %}
+							<h3><font color="#eb4800">{{ pre_item }}</font>  {{ pre_acc }}</h3>
+							<div class="product-box">
+								<span class="sale_tag"></span>
+								<p><a href="{{p[0]}}"><img src="{{ url_for('static', filename=p[1]) }}" alt="" /></a></p>
+								<p class="itemname"><font face="Courgette" size="1">{{p[2]}}</font></p><br/>
+								<a href="products.html" class="category"> {{pre_item}}</a>
+								<p class="price"><font face="fantasy" size="3">NT${{p[3]}}</font></p>
+							</div>
 						{% endif %}
 					</div>
 <!--											<div class="span6">-->

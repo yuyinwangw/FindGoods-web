@@ -1,8 +1,8 @@
-from flask import current_app
+# from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from . import db, login_manager
 
 
@@ -16,6 +16,7 @@ class Plform(db.Model):
     PFNo = db.Column(db.String(10), primary_key=True, nullable=False)
     PFName = db.Column(db.String(60), nullable=False)
     item = relationship("Item", backref=backref('plform', order_by=PFNo))
+
     def __repr__(self):
         return "<Plate Form Name %s>" % self.PFName
 
@@ -33,6 +34,7 @@ class Item(db.Model):
     URL = db.Column(db.Text, nullable=False)
     IMG_Path = db.Column(db.Text, nullable=False)
     TAGS = db.Column(db.String(100))
+
     def __repr__(self):
         return "<Item %s>" % self.ItemName
 
@@ -81,4 +83,3 @@ def load_user(user_id):
     # user_test = User()
     # user_test.id = user_id
     return User.query.get(user_id)
-
