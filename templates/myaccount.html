@@ -79,32 +79,32 @@
 			</section>
 			<section class="header_text sub">
 			<img class="pageBanner" src="{{ url_for('static', filename='img/login.png') }}" alt="New products" >
-<!--				<h4><span>Check Out</span></h4>-->
+				<h1><span>基本資料</span></h1>
 			</section>
+			{% if current_user.is_authenticated %}
 			<section class="main-content">
 				<div class="row">
-					<div class="span12">
-						<div class="accordion" id="accordion2">
-							<div class="accordion-group">
-								{% if current_user.is_authenticated %}
-								<div class="accordion-heading">
-									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2">My Account</a>
-								</div>
-								<div class="accordion-body in collapse">
-									<div class="accordion-inner">
-										<div class="row-fluid">
-											<div class="span6">
-<!--												<h2>My Information</h2>-->
-												{% for i in userInfo %}
-												<div class="control-group">
-													<label class="control-label"><h3>{{ i[0] }}</h3></label>
-													<div class="controls">
-														<font color="darkorange"><h5>{{ i[1] }}</h5></font>
-													</div>
-												</div>
-												{% endfor %}
-											</div>
-											<div class="span6">
+<!--					<div class="span12">-->
+<!--						<div class="accordion" id="accordion2">-->
+<!--							<div class="accordion-group">-->
+<!--								<div class="accordion-heading">-->
+<!--									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2">My Account</a>-->
+<!--								</div>-->
+<!--								<div class="accordion-body in collapse">-->
+<!--									<div class="accordion-inner">-->
+<!--										<div class="row-fluid">-->
+					<div class="span6">
+						<h4 class="title"><span class="text"><strong><font color="#eb4800">My</font></strong> Account</span></h4>
+						{% for i in userInfo %}
+						<div class="control-group">
+							<label class="control-label"><h4>{{ i[0] }}</h4></label>
+							<div class="controls">
+								<font color="darkorange"><h5>{{ i[1] }}</h5></font>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					<div class="span6">
 <!--												<h2>Your Personal Details</h2>-->
 <!--												{% for i in userInfo %}-->
 <!--												<div class="control-group">-->
@@ -177,18 +177,18 @@
 <!--														</select>-->
 <!--													</div>-->
 <!--												</div>-->
-											</div>
-										</div>
-									</div>
-								</div>
-								{% else %}
-								<center><h1><span>You haven't log in</span></h1></center>
-								{% endif %}
-							</div>
-						</div>
+<!--											</div>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
 					</div>
 				</div>
 			</section>
+			{% else %}
+			<center><h1><span>You haven't logged in</span></h1></center>
+			{% endif %}
 			<section id="footer-bar">
 				<div class="row">
 					<div class="span2"></div>

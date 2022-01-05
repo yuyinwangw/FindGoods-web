@@ -1,14 +1,15 @@
-from flask import render_template, redirect, url_for, session, flash
+from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, current_user, login_required, logout_user
+from sqlalchemy.orm import load_only
+import app
 from . import main
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db
 from ..models import Item, Plform, User, Recomm
+import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
-users = {'JOJO': {'password': 'jojo'}}
 
 
 # @main.route('/protected')
@@ -22,30 +23,40 @@ users = {'JOJO': {'password': 'jojo'}}
 #         return 'Logged in as: ' + current_user.id + 'Login is_active:True'
 
 
-
-
-
-
 @main.route('/register.html', methods=['GET', 'POST'])
 def register():
     loginform = LoginForm()
     reform = RegisterForm()
     if reform.validate_on_submit():
-        first_data = User.query.order_by(User.id.desc()).first()
-        new_id = str(int(first_data.id)+1).zfill(4)
-        user = User(id=new_id,
-                    email=reform.email.data.lower(),
-                    username=reform.username_r.data,
-                    password=reform.password_r.data,
-                    sex=reform.sex.data,
-                    age=reform.age.data,
-                    area=reform.area.data,
-                    career=reform.career.data)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user, reform.remember_me_r.data)
-        print(session)
-        return redirect(url_for('.index'))
+        users = [d.username for d in User.query.options(load_only(User.username))]
+        # print(len(users))
+        if reform.username_r.data not in users:
+            if len(users) == 0:
+                user = User(id="1".zfill(4),
+                            email=reform.email.data.lower(),
+                            username=reform.username_r.data,
+                            password=reform.password_r.data,
+                            sex=reform.sex.data,
+                            age=reform.age.data,
+                            area=reform.area.data,
+                            career=reform.career.data)
+            else:
+                first_data = User.query.order_by(User.id.desc()).first()
+                new_id = str(int(first_data.id)+1).zfill(4)
+                user = User(id=new_id,
+                            email=reform.email.data.lower(),
+                            username=reform.username_r.data,
+                            password=reform.password_r.data,
+                            sex=reform.sex.data,
+                            age=reform.age.data,
+                            area=reform.area.data,
+                            career=reform.career.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, reform.remember_me_r.data)
+            print(session)
+            return redirect(url_for('.index'))
+        flash('Username has been used!')
 
     elif loginform.validate_on_submit():
         user = User.query.filter_by(username=loginform.username.data).first()
@@ -72,7 +83,6 @@ def logout():
 def index():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
-
         theid = (user.id.strip('0'))
         username = user.username
         tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
@@ -110,8 +120,6 @@ def index():
         # dataInfo = []
         return render_template('index.html', dataInfo=info, username=username, tags=tags)
 
-
-        
 #冷啟動，此用者偏好選單
 @main.route('/main_select')
 def index3():
@@ -152,6 +160,7 @@ def recommend(itemid):
     # dataInfo = []
     return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
 
+
 @main.route('/myaccount.html', methods=['GET'])
 def myaccount():
     if current_user.is_authenticated:
@@ -165,15 +174,6 @@ def myaccount():
             userInfo.append(["Age", d.age])
             userInfo.append(["Living Place", d.area])
             userInfo.append(["Occupation", d.career])
-
-        # userInfo = [d.username, d.email for d in User.query.filter(User.id == current_user.id)]
-        # dict = {}
-        # dict["Username"] = userInfo[0][0]
-        # dict["Email"] = userInfo[0][1]
-        # dict["Sex"] = userInfo[0][2]
-        # dict["Age"] = userInfo[0][3]
-        # dict["Living Place"] = userInfo[0][4]
-        # dict["Occupation"] = userInfo[0][5]
     else:
         username = ''
         userInfo = ''
@@ -190,14 +190,29 @@ def product():
     return render_template('products.html', username=username)
 
 
-@main.route('/search.html', methods=['GET'])
+@main.route('/search.html', methods=['GET', 'POST'])
 def search():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
     else:
         username = ''
-    return render_template('search.html', username=username)
+    imgform = PhotoForm()
+    print(imgform.image.data)
+    print(app.config['default'].UPLOAD_FOLDER)
+    if imgform.validate_on_submit():
+        image = imgform.image.data
+        print(image)
+        filename = image.filename
+        print(filename)
+        image.save(os.path.join(app.config['default'].UPLOAD_FOLDER, filename))
+        uploadfile_path = 'img/uploads/' + filename
+        print(uploadfile_path)
+        return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform)
+    elif imgform.errors:
+        print("error")
+        flash(imgform.errors['image'][0])
+    return render_template('search.html', username=username, imgform=imgform)
 
 
 @main.route('/trend.html', methods=['GET'])
