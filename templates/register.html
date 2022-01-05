@@ -114,13 +114,15 @@
 										<label class="control-label">Remember me</label>
 									</div>
 								</div>
-								{% with messages = get_flashed_messages() %}
-									{% if messages %}
-										{% for message in messages %}
-											<a>{{ message }}</a>
-										{% endfor %}
-									{% endif %}
-								{% endwith %}
+								{% if loginform.validate_on_submit() %}
+									{% with messages = get_flashed_messages() %}
+										{% if messages %}
+											{% for message in messages %}
+												<a>{{ message }}</a>
+											{% endfor %}
+										{% endif %}
+									{% endwith %}
+								{% endif %}
 								<div class="control-group">
 									<input tabindex="3" class="btn btn-inverse large" type="submit" value="Sign into your account">
 									<hr>
@@ -139,6 +141,15 @@
 									<div class="controls">
 <!--										<input type="text" placeholder="Enter your username" class="input-xlarge">-->
 										{{ reform.username_r(class="input-xlarge",placeholder='Enter Your Username') }}
+										{% if reform.validate_on_submit() %}
+											{% with messages = get_flashed_messages() %}
+												{% if messages %}
+													{% for message in messages %}
+														<a>{{ message }}</a>
+													{% endfor %}
+												{% endif %}
+											{% endwith %}
+										{% endif %}
 									</div>
 								</div>
 								<div class="control-group">

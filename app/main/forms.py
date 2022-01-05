@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField, SelectField, BooleanField, IntegerField
+from flask_wtf.file import FileRequired, FileField, FileAllowed
+from wtforms import StringField, SubmitField, PasswordField, EmailField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 # from wtforms import ValidationError
 # from flask_pagedown.fields import PageDownField
@@ -23,3 +24,8 @@ class RegisterForm(FlaskForm):
     career = StringField(u'Career', validators=[Length(min=1, max=10, message='Not Null'), DataRequired(message='Not Null')])
     remember_me_r = BooleanField('Keep me logged in')
     submit_r = SubmitField('Submit')
+
+
+class PhotoForm(FlaskForm):
+    image = FileField('Upload Your Image', validators=[FileAllowed(['png', 'jpeg', 'jpg'], "wrong format!"), FileRequired()])
+    submit_i = SubmitField('Submit')
