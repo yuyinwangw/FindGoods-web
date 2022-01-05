@@ -14,7 +14,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 import random
 
 
-
 # @main.route('/protected')
 # @login_required
 # def protected():
