@@ -288,19 +288,21 @@
 										<a class="left button" href="#myCarousel-2" data-slide="prev"></a><a class="right button" href="#myCarousel-2" data-slide="next"></a>
 									</span>
 								</h4>
-<!--								<div id="myCarousel-2" class="myCarousel carousel slide">-->
-<!--									<div class="carousel-inner">-->
-<!--										<div class="active item">-->
-<!--											<ul class="thumbnails">-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<span class="sale_tag"></span>-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware2.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>-->
-<!--														<a href="products.html" class="category">Commodo consequat</a>-->
-<!--														<p class="price">$25.50</p>-->
-<!--													</div>-->
-<!--												</li>-->
+								<div id="myCarousel-2" class="myCarousel carousel slide">-->
+									<div class="carousel-inner">
+										<div class="active item">
+											<ul class="thumbnails">
+												{%for i in recdata%}
+												<li class="span3">
+													<div class="product-box">
+														<span class="sale_tag"></span>
+														<p><a href="{{i[2]}}"><img src="{{i[1]}}" alt="" /></a></p>
+														<a href="product_detail.html" class="title">{{i[0]}}</a><br/>
+														<a href="products.html" class="category">{{i[5]}}</a>
+														<p class="price">${{i[3]}}</p>
+													</div>
+ 												</li>
+												 {%endfor%}
 <!--												<li class="span3">-->
 <!--													<div class="product-box">-->
 <!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware1.jpg')}}" alt="" /></a></p>-->
@@ -325,8 +327,8 @@
 <!--														<p class="price">$25.60</p>-->
 <!--													</div>-->
 <!--												</li>-->
-<!--											</ul>-->
-<!--										</div>-->
+											</ul>
+										</div>
 <!--										<div class="item">-->
 <!--											<ul class="thumbnails">-->
 <!--												<li class="span3">-->
