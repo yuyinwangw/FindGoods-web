@@ -7,7 +7,7 @@ from ..models import Item, Plform, User
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
+from .CUB import recommend_movies
 
 users = {'JOJO': {'password': 'jojo'}}
 
@@ -94,8 +94,8 @@ def index():
     return render_template('index.html', dataInfo=info, username=username, tags=tags)
 
 
-@main.route('/index2_1.html', methods=['GET'])
-def index2():
+@main.route('/index2_1.html/<userId>', methods=['GET'])
+def index2(userId):
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
@@ -110,8 +110,10 @@ def index2():
         for data in dataInfo:
             if data[5]==i:
                 info[i].append(data)
-
-    return render_template('index2_1.html', dataInfo=info, username=username, tags=tags)
+    data = recommend_movies(int(userId),8)
+    recdata = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID.in_(data))]
+    # print(recdata)
+    return render_template('index2_1.html', dataInfo=info, username=username, tags=tags, recdata=recdata)
 
 #冷啟動，此用者偏好選單
 @main.route('/main_select')
