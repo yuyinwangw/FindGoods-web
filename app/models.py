@@ -20,6 +20,23 @@ class Plform(db.Model):
     def __repr__(self):
         return "<Plate Form Name %s>" % self.PFName
 
+class Recomm(db.Model):
+    __tablename__ = 'recomm'
+
+    userId = db.Column(db.String(10), primary_key=True, nullable=False)
+    item1 = db.Column(db.Text, nullable=False)
+    item2 = db.Column(db.Text, nullable=False)
+    item3 = db.Column(db.Text, nullable=False)
+    item4 = db.Column(db.Text, nullable=False)
+    item5 = db.Column(db.Text, nullable=False)
+    item6 = db.Column(db.Text, nullable=False)
+    item7 = db.Column(db.Text, nullable=False)
+    item8 = db.Column(db.Text, nullable=False)
+    item9 = db.Column(db.Text, nullable=False)
+    item10 = db.Column(db.Text, nullable=False)
+    
+    def __repr__(self):
+        return "<Recomm Form Name %s>" % self.Recomm
 
 class Item(db.Model):
     __tablename__ = 'item'
@@ -32,7 +49,8 @@ class Item(db.Model):
     Brand = db.Column(db.String(16))
     Cate = db.Column(db.String(45))
     URL = db.Column(db.Text, nullable=False)
-    IMG_Path = db.Column(db.Text, nullable=False)
+    IMG_PATH = db.Column(db.Text, nullable=False)
+    IMG_URL = db.Column(db.Text, nullable=False)
     TAGS = db.Column(db.String(100))
 
     def __repr__(self):
