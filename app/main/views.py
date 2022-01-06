@@ -87,8 +87,8 @@ def index():
         user = User.query.get(current_user.id)
         theid = (user.id.strip('0'))
         username = user.username
-        tags = ('vasesbowl','frame','lamps','footstool','Cushion','mugs','desk')
-        dataInfo = [[d.ItemName, d.IMG_PATH, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
         info = {}
         for i in tags:
             if i not in info.items():
@@ -114,6 +114,7 @@ def index():
             for data in dataInfo:
                 if data[5]==i:
                     info[i].append(data)
+        # print(info)
         # print(info['vasesbowl'])
 
 
