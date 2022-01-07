@@ -90,7 +90,7 @@ def index():
     else:
         username = ''
     tags = ('vasesbowl','frames','lamps','footstool','Cushion','mugs','desk')
-    dataInfo = [[d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item)]
+    dataInfo = [[d.ITEMNAME, d.IMG_PATH, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS] for d in db.session.query(Item)]
     info = {}
     # for i, data in enumerate(dataInfo):
     #     dataInfo[i][1] = ("img/ikea_photos/" + data[0] + "_1.jpg")
@@ -116,7 +116,7 @@ def index2():
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ItemNo, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate, u.PFName] for d, u in db.session.query(Item, Plform).filter(Item.PFNo == Plform.PFNo)]
+    dataInfo = [[d.ITEMNO, d.ITEMNAME, d.IMG_PATH, d.URL, str(d.PRICE), d.BRAND, d.CATE, u.PFNAME] for d, u in db.session.query(Item, Plform).filter(Item.PFNO == Plform.PFNO)]
     # for i, data in enumerate(dataInfo):
     #     dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
     # dataInfo = []
@@ -158,7 +158,7 @@ def recommend(itemid):
     recomItem = get_recommendations(int(itemid), n=9, cosine_sim=cosine_sim2).values.tolist()
     # print(tuple(recomItem))
     # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
-    dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
+    dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate] for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
     # print(dataInfo)
     # dataInfo = []
     return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
@@ -183,14 +183,17 @@ def myaccount():
     return render_template('myaccount.html', userInfo=userInfo, username=username)
 
 
-@main.route('/products.html', methods=['GET'])
-def product():
-    if current_user.is_authenticated:
-        user = User.query.get(current_user.id)
-        username = user.username
-    else:
-        username = ''
-    return render_template('products.html', username=username)
+@main.route('/products/<tags>', methods=['GET'])
+# def product():
+#     if current_user.is_authenticated:
+#         user = User.query.get(current_user.id)
+#         username = user.username
+#     else:
+#         username = ''
+def show_product(tags):
+    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME] for d, p in
+                db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+    return render_template('products.html', dataInfo=dataInfo, tags=tags)
 
 
 @main.route('/search.html', methods=['GET', 'POST'])
