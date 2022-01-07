@@ -3,7 +3,7 @@ from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from . import db, login_manager
+from . import db, login_manager, mongo
 from pymongo import MongoClient, errors
 
 
@@ -106,45 +106,45 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-def click_insert(dbname, data):
-    connection = MongoClient(host='localhost', port=27017)
-    mdb = connection.user
-    collection = mdb[dbname]
-    print("collection: ", collection)
-
-    try:
-        # collection.drop()
-        collection.insert_one(data)
-        print("已新增")
-    except (errors.DuplicateKeyError, errors.BulkWriteError) as err_name:
-        print(err_name)
-        print("已經存在 _id (因此不寫入)")
-
-    return print("Insert Done!!")
-
-
-def click_read(dbname, idname):
-    connection = MongoClient(host='localhost', port=27017)
-    mdb = connection.user
-    collection = mdb[dbname]
-    print("collection: ", collection)
-
-    my_query = {'_id': idname}
-    data = list(collection.find(my_query))
-    return data
-
-
-def click_update(dbname, name, itemId):
-    connection = MongoClient(host='localhost', port=27017)
-    mdb = connection.user
-    collection = mdb[dbname]
-    print("collection: ", collection)
-
-    try:
-        collection.update({"name": name}, {"$push": {"click": {itemId: 1}}})
-        print("已新增")
-    except (errors.DuplicateKeyError, errors.BulkWriteError) as err_name:
-        print(err_name)
-        print("已經存在 _id (因此不寫入)")
-
-    return print("Insert Done!!")
+# def click_insert(dbname, data):
+#     connection = MongoClient()
+#     mdb = connection.user
+#     collection = mdb[dbname]
+#     print("collection: ", collection)
+#
+#     try:
+#         # collection.drop()
+#         collection.insert_one(data)
+#         print("已新增")
+#     except (errors.DuplicateKeyError, errors.BulkWriteError) as err_name:
+#         print(err_name)
+#         print("已經存在 _id (因此不寫入)")
+#
+#     return print("Insert Done!!")
+#
+#
+# def click_read(dbname, idname):
+#     connection = MongoClient()
+#     mdb = connection.user
+#     collection = mdb[dbname]
+#     print("collection: ", collection)
+#
+#     my_query = {'_id': idname}
+#     data = list(collection.find(my_query))
+#     return data
+#
+#
+# def click_update(dbname, name, itemId):
+#     connection = MongoClient()
+#     mdb = connection.user
+#     collection = mdb[dbname]
+#     print("collection: ", collection)
+#
+#     try:
+#         collection.update({"name": name}, {"$push": {"click": {itemId: 1}}})
+#         print("已新增")
+#     except (errors.DuplicateKeyError, errors.BulkWriteError) as err_name:
+#         print(err_name)
+#         print("已經存在 _id (因此不寫入)")
+#
+#     return print("Insert Done!!")

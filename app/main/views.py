@@ -4,9 +4,9 @@ from sqlalchemy.orm import load_only
 import app
 from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
-from .. import db
+from .. import db, mongo
 from ..Image_recognition import img_recognition
-from ..models import Item, User, Recomm, click_insert, click_read, click_update
+from ..models import Item, User, Recomm
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
@@ -153,11 +153,15 @@ def recommend(itemid):
         user = User.query.get(current_user.id)
         username = user.username
         date_now = "D" + str(datetime.date.today()).replace("-", "")
-        if click_read(date_now, user.id.strip("0")):
-            click_update(date_now, username, itemid)
+        if mongo.db[date_now].find({'_id': user.id.strip("0")}):
+            mongo.db[date_now].update({"name": username}, {"$push": {"click": {itemid: 1}}})
         else:
-            dbdata = {'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]}
-            click_insert(date_now, dbdata)
+            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]})
+        # if click_read(date_now, user.id.strip("0")):
+        #     click_update(date_now, username, itemid)
+        # else:
+        #     dbdata = {'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]}
+        #     click_insert(date_now, dbdata)
     else:
         username = ''
     data = [[d.ItemID, d.TAGS] for d in db.session.query(Item)]

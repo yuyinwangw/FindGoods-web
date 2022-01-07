@@ -30,6 +30,9 @@ class DevelopmentConfig(Config):
         os.getenv("DB_PASSWORD"),
         os.getenv("DB_HOST"),
         os.getenv("DB_NAME"))
+    MONGO_URI = "mongodb://{}:27017/{}".format(
+        os.getenv("MDB_HOST"),
+        os.getenv("MDB_NAME"))
 
 
 # class TestingConfig(Config):
