@@ -80,7 +80,7 @@
 					<div class="account pull-right">
 						<ul class="user-menu">
 							{% if current_user.is_authenticated %}
-								<a>Hi {{ username }}!</a>
+								<li><a><font color="#eb4800">Hi {{ username }}!</font></a></li>
 							{% endif %}
 							<li><a href="./myaccount.html">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
@@ -155,23 +155,27 @@
 								<h4 class="title">
 									<span class="pull-left"><span class="text"><span class="line">Feature <strong>{{tag}}</strong></span></span></span>
 									<span class="pull-right">
-										<a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
+										<a class="left button" href={{"#myCarousel"~tag}} data-slide="prev"></a><a class="right button" href={{"#myCarousel"~tag}} data-slide="next"></a>
+<!--										<a class="left button" href="#myCarousel1" data-slide="prev"></a><a class="right button" href="#myCarousel1" data-slide="next"></a>-->
 									</span>
 								</h4>
-								<div id="myCarousel" class="myCarousel carousel slide">
+								<div id={{"myCarousel"~tag}} class="myCarousel carousel slide">
+<!--									<div id="myCarousel1" class="myCarousel carousel slide">-->
 									<div class="carousel-inner">
 										<div class="active item">
 											<ul class="thumbnails">
+<!--												插入迴圈-->
 												{% for i in dataInfo[tag][0:4] %}
-												<li class="span3">
-													<div class="product-box">
-														<span class="sale_tag"></span>
-														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
-														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-														<a href="products.html" class="category"> {{i[5]}}</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-													</div>
-												</li>
+													<li class="span3">
+														<div class="product-box">
+															<span class="sale_tag"></span>
+<!--															<p><a href="/recommend/{{i[-1]}}"><img src="{{url_for('static', filename=i[1])}}" alt="" /></a></p>-->
+															<p><a href="/recommend/{{i[-1]}}"><img src="{{i[1]}}" alt="" /></a></p>
+															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+															<a href="products.html" class="category"> {{i[6]}}</a>
+															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														</div>
+													</li>
 												{% endfor %}
 											</ul>
 										</div>
@@ -179,48 +183,17 @@
 											<ul class="thumbnails">
 <!--												插入迴圈-->
 												{% for i in dataInfo[tag][4:8] %}
-												<li class="span3">
-													<div class="product-box">
-														<span class="sale_tag"></span>
-														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
-														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-														<a href="products.html" class="category">{{i[5]}}</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-													</div>
-												</li>
+													<li class="span3">
+														<div class="product-box">
+															<span class="sale_tag"></span>
+<!--															<p><a href="/recommend/{{i[-1]}}"><img src="{{url_for('static', filename=i[1])}}" alt="" /></a></p>-->
+															<p><a href="/recommend/{{i[-1]}}"><img src="{{i[1]}}" alt="" /></a></p>
+															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+															<a href="products.html" class="category">{{i[6]}}</a>
+															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														</div>
+													</li>
 												{% endfor %}
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/5.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Know exactly</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$22.30</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/6.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>-->
-<!--														<a href="products.html" class="category">Commodo consequat</a>-->
-<!--														<p class="price">$40.25</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/7.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">You think water</a><br/>-->
-<!--														<a href="products.html" class="category">World once</a>-->
-<!--														<p class="price">$10.45</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/8.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Quis nostrud exerci</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$35.50</p>-->
-<!--													</div>-->
-<!--												</li>																																	-->
 											</ul>
 										</div>
 									</div>							

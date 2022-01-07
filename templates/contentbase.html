@@ -82,13 +82,13 @@
 							{% if current_user.is_authenticated %}
 								<a>Hi {{ username }}!</a>
 							{% endif %}
-							<li><a href="./myaccount.html">My Account</a></li>
+							<li><a href="{{ url_for('.myaccount') }}">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
 <!--							<li><a href="./checkout.html">Checkout</a></li>-->
 							{% if current_user.is_authenticated %}
 								<li><a href="{{ url_for('.logout') }}">Logout</a></li>
 							{% else %}
-								<li><a href="./register.html">Login</a></li>
+								<li><a href="{{ url_for('.register') }}">Login</a></li>
 							{% endif %}
 						</ul>
 					</div>
@@ -98,23 +98,23 @@
 		<div id="wrapper" class="container">
 			<section class="navbar main-menu">
 				<div class="navbar-inner main-menu">
-					<a href="index.html" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
+					<a href="{{ url_for('.index') }}" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
 					<nav id="menu" class="pull-right">
 						<ul>
-							<li><a href="./products.html">Category</a>
+							<li><a href="{{ url_for('.product') }}">Category</a>
 								<ul>
-									<li><a href="./products.html">Frame</a></li>
-									<li><a href="./products.html">Table Lamp</a></li>
-									<li><a href="./products.html">Vase</a></li>
-									<li><a href="./products.html">Desk</a></li>
-									<li><a href="./products.html">Mug</a></li>
-									<li><a href="./products.html">Footstool</a></li>
-									<li><a href="./products.html">Cushion</a></li>
+									<li><a href="{{ url_for('.product') }}">Frame</a></li>
+									<li><a href="{{ url_for('.product') }}">Table Lamp</a></li>
+									<li><a href="{{ url_for('.product') }}">Vase</a></li>
+									<li><a href="{{ url_for('.product') }}">Desk</a></li>
+									<li><a href="{{ url_for('.product') }}">Mug</a></li>
+									<li><a href="{{ url_for('.product') }}">Footstool</a></li>
+									<li><a href="{{ url_for('.product') }}">Cushion</a></li>
 								</ul>
 							</li>
-							<li><a href="./search.html">Photo to Search</a></li>
-							<li><a href="./trend.html">Popular trending</a></li>
-							<li><a href="./about.html">About us</a></li>
+							<li><a href="{{ url_for('.search') }}">Photo to Search</a></li>
+							<li><a href="{{ url_for('.trend') }}">Popular trending</a></li>
+							<li><a href="{{ url_for('.about') }}">About us</a></li>
 						</ul>
 					</nav>
 				</div>
