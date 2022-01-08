@@ -3,8 +3,8 @@ from flask_login import UserMixin, AnonymousUserMixin
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from . import db, login_manager, mongo
-from pymongo import MongoClient, errors
+from . import db, login_manager
+# from pymongo import MongoClient, errors
 
 
 # class User(UserMixin):
@@ -14,9 +14,9 @@ from pymongo import MongoClient, errors
 class Plform(db.Model):
     __tablename__ = 'plform'
 
-    PFNo = db.Column(db.String(10), primary_key=True, nullable=False)
-    PFName = db.Column(db.String(60), nullable=False)
-    item = relationship("Item", backref=backref('plform', order_by=PFNo))
+    PFNO = db.Column(db.String(10), primary_key=True, nullable=False)
+    PFNAME = db.Column(db.String(60), nullable=False)
+    item = relationship("Item", backref=backref('plform', order_by=PFNO))
     
     def __repr__(self):
         return "<Plate Form Name %s>" % self.PFNAME

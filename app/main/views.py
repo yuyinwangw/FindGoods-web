@@ -6,7 +6,7 @@ from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db, mongo
 from ..Image_recognition import img_recognition
-from ..models import Item, User, Recomm
+from ..models import Item, User, Recomm, Plform
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
@@ -36,6 +36,18 @@ def get_recommendations(itemid, cosine_sim, indices, n, df2):
     # use 1:n because 0 is the same movie entered
     top_n_idx = list(scores.iloc[1:n].index)
     return df2['title'].iloc[top_n_idx]
+    # def get_recommendations(itemid, n=10, cosine_sim=cosine_sim2):
+    #     if itemid not in indices.index:
+    #         print("furniture not in database.")
+    #         return
+    #     else:
+    #         idx = indices[itemid]
+    #     # cosine similarity scores of movies in descending order
+    #     scores = pd.Series(cosine_sim[idx]).sort_values(ascending=False)
+    #     # top n most similar movies indexes
+    #     # use 1:n because 0 is the same movie entered
+    #     top_n_idx = list(scores.iloc[1:n].index)
+    #     return df2['title'].iloc[top_n_idx]
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -100,43 +112,32 @@ def index():
         user = User.query.get(current_user.id)
         theid = (user.id.strip('0'))
         username = user.username
-        tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
-        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
-        random.shuffle(dataInfo)
-        # print(dataInfo[0])
-        info = {}
-        for i in tags:
-            if i not in info.items():
-                info[i] = list()
-            for data in dataInfo:
-                if data[5] == i:
-                    info[i].append(data)
-
-        recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in db.session.query(Recomm).filter(Recomm.userId == theid)]
+        recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in
+                   db.session.query(Recomm).filter(Recomm.userId == theid)]
         # print(recdata[0])
-        result = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item).filter(Item.ItemID.in_(recdata[0]))]
+        result = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in
+                  db.session.query(Item).filter(Item.ITEMID.in_(recdata[0]))]
         # print(result)
-        return render_template('index.html', dataInfo=info, username=username, tags=tags, recdata=result[:8])
     else:
         username = ''
-        recdata = ''
-        # print(session)
-        tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
-        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
-        random.shuffle(dataInfo)
-        info = {}
-        for i in tags:
-            if i not in info.items():
-                info[i] = list()
-            for data in dataInfo:
-                if data[5] == i:
-                    info[i].append(data)
-        # print(info)
-        # print(info['vasesbowl'])
-        # print(tags[0])
-        # print(dataInfo[0])
-        # dataInfo = []
-        return render_template('index.html', dataInfo=info, username=username, tags=tags, recdata=recdata)
+        result = []
+    tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
+    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in db.session.query(Item)]
+    random.shuffle(dataInfo)
+    # print(dataInfo[0])
+    info = {}
+    for i in tags:
+        if i not in info.items():
+            info[i] = list()
+        for data in dataInfo:
+            if data[5] == i:
+                info[i].append(data)
+    # print(info)
+    # print(info['vasesbowl'])
+    # print(tags[0])
+    # print(dataInfo[0])
+    # dataInfo = []
+    return render_template('index.html', username=username, dataInfo=info, tags=tags, recdata=result[:8])
 
 
 # 冷啟動，此用者偏好選單
@@ -165,7 +166,7 @@ def recommend(itemid):
         #     click_insert(date_now, dbdata)
     else:
         username = ''
-    data = [[d.ItemID, d.TAGS] for d in db.session.query(Item)]
+    data = [[d.ITEMID, d.TAGS] for d in db.session.query(Item)]
     df2 = pd.DataFrame(data, columns=['title', 'keywords'])
     # print(df2)
     count = CountVectorizer()
@@ -174,25 +175,12 @@ def recommend(itemid):
     cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
     indices = pd.Series(df2.index, index=df2['title'])
     # print(indices)
-    # user_select = [[d.ItemID, d.Cate] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
-    userselect = [[d.ItemNo, d.ItemID, d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
-
-    # def get_recommendations(itemid, n=10, cosine_sim=cosine_sim2):
-    #     if itemid not in indices.index:
-    #         print("furniture not in database.")
-    #         return
-    #     else:
-    #         idx = indices[itemid]
-    #     # cosine similarity scores of movies in descending order
-    #     scores = pd.Series(cosine_sim[idx]).sort_values(ascending=False)
-    #     # top n most similar movies indexes
-    #     # use 1:n because 0 is the same movie entered
-    #     top_n_idx = list(scores.iloc[1:n].index)
-    #     return df2['title'].iloc[top_n_idx]
+    # user_select = [[d.ITEMID, d.CATE] for d in db.session.query(Item).filter(Item.ITEMID == itemid)]
+    userselect = [[d.ITEMNO, d.ITEMID, d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS] for d in db.session.query(Item).filter(Item.ITEMID == itemid)]
     recomItem = get_recommendations(int(itemid), cosine_sim2, indices, 5, df2).values.tolist()
     # print(tuple(recomItem))
     # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
-    dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
+    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in db.session.query(Item).filter(Item.ITEMID.in_(recomItem))]
     # print(dataInfo)
     # dataInfo = []
     return render_template('contentbase.html', username=username, userselect=userselect, dataInfo=dataInfo)
@@ -214,7 +202,7 @@ def myaccount():
     else:
         username = ''
         userInfo = ''
-    return render_template('myaccount.html', userInfo=userInfo, username=username)
+    return render_template('myaccount.html', username=username, userInfo=userInfo)
 
 
 @main.route('/products/<tags>', methods=['GET'])
@@ -225,9 +213,14 @@ def myaccount():
 #     else:
 #         username = ''
 def show_product(tags):
+    if current_user.is_authenticated:
+        user = User.query.get(current_user.id)
+        username = user.username
+    else:
+        username = ''
     dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME] for d, p in
                 db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
-    return render_template('products.html', dataInfo=dataInfo, tags=tags)
+    return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
 
 
 @main.route('/search.html', methods=['GET', 'POST'])
@@ -253,7 +246,7 @@ def search():
         pre_item = pre_list[0][1]
         pre_acc = "Accuracy: " + str(pre_list[0][0])
         if pre_list[0][0] >= 0.9:
-            pre_item_list_all = [[d.ItemID, d.IMG_URL, d.ItemName, d.Price] for d in Item.query.filter(Item.Cate == pre_item)]
+            pre_item_list_all = [[d.ITEMID, d.IMG_URL, d.ITEMNAME, d.PRICE] for d in Item.query.filter(Item.CATE == pre_item)]
             item_num = len(pre_item_list_all)-1
             p = pre_item_list_all[random.randint(0, item_num)]
             print(p[1])
@@ -284,30 +277,3 @@ def about():
     else:
         username = ''
     return render_template('about.html', username=username)
-
-
-# @main.route('/cart.html', methods=['GET'])
-# def cart():
-#     if 'username' in session.keys():
-#         username = session['username']
-#     else:
-#         username = ''
-#     return render_template('cart.html', username=username)
-#
-#
-# @main.route('/checkout.html', methods=['GET'])
-# def checkout():
-#     if 'username' in session.keys():
-#         username = session['username']
-#     else:
-#         username = ''
-#     return render_template('checkout.html', username=username)
-#
-#
-# @main.route('/contact.html', methods=['GET'])
-# def contact():
-#     if 'username' in session.keys():
-#         username = session['username']
-#     else:
-#         username = ''
-#     return render_template('contact.html', username=username)

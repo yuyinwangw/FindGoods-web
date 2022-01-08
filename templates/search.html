@@ -40,13 +40,13 @@
 							{% if current_user.is_authenticated %}
 								<li><a><font color="#eb4800">Hi {{ username }}!</font></a></li>
 							{% endif %}
-							<li><a href="./myaccount.html">My Account</a></li>
+							<li><a href="{{ url_for('.myaccount') }}">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
 <!--							<li><a href="./checkout.html">Checkout</a></li>-->
 							{% if current_user.is_authenticated %}
 								<li><a href="{{ url_for('.logout') }}">Logout</a></li>
 							{% else %}
-								<li><a href="./register.html">Login</a></li>
+								<li><a href="{{ url_for('.register') }}">Login</a></li>
 							{% endif %}
 						</ul>
 					</div>
@@ -56,7 +56,7 @@
 		<div id="wrapper" class="container">
 			<section class="navbar main-menu">
 				<div class="navbar-inner main-menu">
-					<a href="index.html" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
+					<a href="{{ url_for('.index') }}" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
 					<nav id="menu" class="pull-right">
 						<ul>
 							<li><a>Category</a>
@@ -70,9 +70,9 @@
 									<li><a href="/products/Cushion">Cushions</a></li>
 								</ul>
 							</li>
-							<li><a href="./search.html">Photo to Search</a></li>
-							<li><a href="./trend.html">Popular trending</a></li>
-							<li><a href="./about.html">About us</a></li>
+							<li><a href="{{ url_for('.search') }}">Photo to Search</a></li>
+							<li><a href="{{ url_for('.trend') }}">Popular trending</a></li>
+							<li><a href="{{ url_for('.about') }}">About us</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -283,23 +283,11 @@
 					<div class="span5">
 						<h4>Navigation</h4>
 						<ul class="nav">
-							<li><a href="./index.html">Homepage</a></li>
-							<li><a href="./myaccount.html">My Account</a></li>
-							<li><a href="./about.html">About Us</a></li>
-<!--							<li><a href="./contact.html">Contact Us</a></li>-->
-<!--							<li><a href="./cart.html">Cart</a></li>-->
-<!--							<li><a href="./register.html">Login</a></li>-->
+							<li><a href="{{ url_for('.index') }}">Homepage</a></li>
+							<li><a href="{{ url_for('.myaccount') }}">My Account</a></li>
+							<li><a href="{{ url_for('.about') }}">About Us</a></li>
 						</ul>
 					</div>
-<!--					<div class="span4">-->
-<!--						<h4><a href="myaccount.html">My Account</a></h4>-->
-<!--						<ul class="nav">-->
-<!--							<li><a href="myaccount.html">My Account</a></li>-->
-<!--							<li><a href="#">Order History</a></li>-->
-<!--							<li><a href="#">Wish List</a></li>-->
-<!--							<li><a href="#">Newsletter</a></li>-->
-<!--						</ul>-->
-<!--					</div>-->
 					<div class="span5">
 						<p class="logo"><img src="{{url_for('static', filename='img/logo.png')}}" class="site_logo" alt=""></p>
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
@@ -308,9 +296,6 @@
 							<a class="facebook" href="https://www.facebook.com/oldpig81701"><i class="fab fa-facebook fa-2x"></i></a>
 							<a class="instagram" href="https://www.instagram.com/tsung_yo_chu/"><i class="fab fa-instagram fa-2x"></i></a>
 							<a class="linkedin" href="https://www.linkedin.com/in/joseph-chu-275660180"><i class="fab fa-linkedin fa-2x"></i></a>
-<!--							<a class="twitter" href="#">Twitter</a>-->
-<!--							<a class="skype" href="#">Skype</a>-->
-<!--							<a class="vimeo" href="#">Vimeo</a>-->
 						</span>
 					</div>					
 				</div>	
