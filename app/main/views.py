@@ -1,19 +1,19 @@
-from flask import render_template, redirect, url_for, session, flash, request
+from flask import render_template, redirect, url_for, session, flash
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.orm import load_only
 import app
 from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
-from .. import db
-from ..models import Item, Plform, User
+from .. import db, mongo
+from ..Image_recognition import img_recognition
+from ..models import Item, User, Recomm
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import random
+import datetime
 
-
-# def allowed_file(filename):
-#     return '.' in filename and filename.lower().rsplit('.', 1)[1] in ('txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif')
 
 # @main.route('/protected')
 # @login_required
@@ -24,6 +24,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 #     #  current_user確實的取得了登錄狀態
 #     if current_user.is_active:
 #         return 'Logged in as: ' + current_user.id + 'Login is_active:True'
+def get_recommendations(itemid, cosine_sim, indices, n, df2):
+    if itemid not in indices.index:
+        print("furniture not in database.")
+        return
+    else:
+        idx = indices[itemid]
+    # cosine similarity scores of movies in descending order
+    scores = pd.Series(cosine_sim[idx]).sort_values(ascending=False)
+    # top n most similar movies indexes
+    # use 1:n because 0 is the same movie entered
+    top_n_idx = list(scores.iloc[1:n].index)
+    return df2['title'].iloc[top_n_idx]
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -45,7 +57,7 @@ def register():
                             career=reform.career.data)
             else:
                 first_data = User.query.order_by(User.id.desc()).first()
-                new_id = str(int(first_data.id)+1).zfill(4)
+                new_id = str(int(first_data.id) + 1).zfill(4)
                 user = User(id=new_id,
                             email=reform.email.data.lower(),
                             username=reform.username_r.data,
@@ -86,54 +98,75 @@ def logout():
 def index():
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
+        theid = (user.id.strip('0'))
         username = user.username
+        tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        random.shuffle(dataInfo)
+        # print(dataInfo[0])
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i] = list()
+            for data in dataInfo:
+                if data[5] == i:
+                    info[i].append(data)
+
+        recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in db.session.query(Recomm).filter(Recomm.userId == theid)]
+        # print(recdata[0])
+        result = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item).filter(Item.ItemID.in_(recdata[0]))]
+        print(result)
+        return render_template('index.html', dataInfo=info, username=username, tags=tags, recdata=result[:8])
     else:
         username = ''
-    tags = ('vasesbowl','frames','lamps','footstool','Cushion','mugs','desk')
-    dataInfo = [[d.ITEMNAME, d.IMG_PATH, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS] for d in db.session.query(Item)]
-    info = {}
-    # for i, data in enumerate(dataInfo):
-    #     dataInfo[i][1] = ("img/ikea_photos/" + data[0] + "_1.jpg")
-    for i in tags:
-        if i not in info.items():
-            info[i]=list()
-        for data in dataInfo:
-            if data[5]==i:
-                info[i].append(data)
-    # print(info['frames'])
+        recdata = ''
+        # print(session)
+        tags = ('vasesbowl', 'frame', 'lamps', 'footstool', 'Cushion', 'mugs', 'desk')
+        dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item)]
+        random.shuffle(dataInfo)
+        info = {}
+        for i in tags:
+            if i not in info.items():
+                info[i] = list()
+            for data in dataInfo:
+                if data[5] == i:
+                    info[i].append(data)
+        # print(info)
+        # print(info['vasesbowl'])
+        # print(tags[0])
+        # print(dataInfo[0])
+        # dataInfo = []
+        return render_template('index.html', dataInfo=info, username=username, tags=tags, recdata=recdata)
 
 
-    # print(tags[0])
-    # print(dataInfo[0])
-    # dataInfo = []
-    return render_template('index.html', dataInfo=info, username=username, tags=tags)
-
-
-@main.route('/index2.html', methods=['GET'])
-def index2():
-    if current_user.is_authenticated:
-        user = User.query.get(current_user.id)
-        username = user.username
-    else:
-        username = ''
-    dataInfo = [[d.ITEMNO, d.ITEMNAME, d.IMG_PATH, d.URL, str(d.PRICE), d.BRAND, d.CATE, u.PFNAME] for d, u in db.session.query(Item, Plform).filter(Item.PFNO == Plform.PFNO)]
-    # for i, data in enumerate(dataInfo):
-    #     dataInfo[i][2] = ("img/ikea_photos/" + data[1] + "_1.jpg")
-    # dataInfo = []
-
-    return render_template('index2.html', dataInfo=dataInfo, username=username)
-
-#冷啟動，此用者偏好選單
+# 冷啟動，此用者偏好選單
 @main.route('/main_select')
 def index3():
     dataInfo = []
     return render_template('main_select.html', dataInfo=dataInfo)
 
-#content-base推薦
+
+# content-base推薦
 @main.route('/recommend/<itemid>')
 def recommend(itemid):
-    data = [[d.ItemID ,d.Cate]  for d in db.session.query(Item)]
-    df2 = pd.DataFrame(data, columns=['title','keywords'])
+    if current_user.is_authenticated:
+        user = User.query.get(current_user.id)
+        username = user.username
+        date_now = "D" + str(datetime.date.today()).replace("-", "")
+        if mongo.db[date_now].find({'_id': user.id.strip("0")}):
+            mongo.db[date_now].update({"name": username}, {"$push": {"click": {itemid: 1}}})
+        else:
+            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]})
+        # if click_read(date_now, user.id.strip("0")):
+        #     click_update(date_now, username, itemid)
+        # else:
+        #     dbdata = {'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]}
+        #     click_insert(date_now, dbdata)
+    else:
+        username = ''
+    data = [[d.ItemID, d.TAGS] for d in db.session.query(Item)]
+    df2 = pd.DataFrame(data, columns=['title', 'keywords'])
+    # print(df2)
     count = CountVectorizer()
     count_matrix = count.fit_transform(df2['keywords'])
 
@@ -141,27 +174,27 @@ def recommend(itemid):
     indices = pd.Series(df2.index, index=df2['title'])
     # print(indices)
     # user_select = [[d.ItemID, d.Cate] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
-    userselect = [[d.ItemNo,d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate]  for d in db.session.query(Item).filter(Item.ItemID == itemid)]
-    def get_recommendations(itemid, n = 10, cosine_sim=cosine_sim2):
-        ikea = []
-        if itemid not in indices.index:
-            print("furniture not in database.")
-            return
-        else:
-            idx = indices[itemid]
-        # cosine similarity scores of movies in descending order
-        scores = pd.Series(cosine_sim[idx]).sort_values(ascending = False)
-        # top n most similar movies indexes
-        # use 1:n because 0 is the same movie entered
-        top_n_idx = list(scores.iloc[1:n].index)
-        return df2['title'].iloc[top_n_idx]
-    recomItem = get_recommendations(int(itemid), n=9, cosine_sim=cosine_sim2).values.tolist()
+    userselect = [[d.ItemNo, d.ItemID, d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS] for d in db.session.query(Item).filter(Item.ItemID == itemid)]
+
+    # def get_recommendations(itemid, n=10, cosine_sim=cosine_sim2):
+    #     if itemid not in indices.index:
+    #         print("furniture not in database.")
+    #         return
+    #     else:
+    #         idx = indices[itemid]
+    #     # cosine similarity scores of movies in descending order
+    #     scores = pd.Series(cosine_sim[idx]).sort_values(ascending=False)
+    #     # top n most similar movies indexes
+    #     # use 1:n because 0 is the same movie entered
+    #     top_n_idx = list(scores.iloc[1:n].index)
+    #     return df2['title'].iloc[top_n_idx]
+    recomItem = get_recommendations(int(itemid), cosine_sim2, indices, 5, df2).values.tolist()
     # print(tuple(recomItem))
     # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
-    dataInfo = [[d.ItemID, d.ItemName, d.IMG_Path, d.URL, str(d.Price), d.Brand, d.Cate] for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
+    dataInfo = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item).filter(Item.ItemID.in_(recomItem))]
     # print(dataInfo)
     # dataInfo = []
-    return render_template('contentbase.html',userselect=userselect, dataInfo=dataInfo)
+    return render_template('contentbase.html', username=username, userselect=userselect, dataInfo=dataInfo)
 
 
 @main.route('/myaccount.html', methods=['GET'])
@@ -171,7 +204,7 @@ def myaccount():
         username = user.username
         userInfo = []
         for d in User.query.filter(User.id == current_user.id):
-            userInfo.append(["Username" ,d.username])
+            userInfo.append(["Username", d.username])
             userInfo.append(["Email", d.email])
             userInfo.append(["Sex", d.sex])
             userInfo.append(["Age", d.age])
@@ -208,13 +241,24 @@ def search():
     print(app.config['default'].UPLOAD_FOLDER)
     if imgform.validate_on_submit():
         image = imgform.image.data
-        print(image)
+        # print(image)
         filename = image.filename
-        print(filename)
+        # print(filename)
         image.save(os.path.join(app.config['default'].UPLOAD_FOLDER, filename))
         uploadfile_path = 'img/uploads/' + filename
-        print(uploadfile_path)
-        return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform)
+        # print(uploadfile_path)
+        print(os.getcwd())
+        pre_list = img_recognition(os.path.join(app.config['default'].UPLOAD_FOLDER, 'model-resnet50-final.h5'), filename)
+        pre_item = pre_list[0][1]
+        pre_acc = "Accuracy: " + str(pre_list[0][0])
+        if pre_list[0][0] >= 0.9:
+            pre_item_list_all = [[d.ItemID, d.IMG_URL, d.ItemName, d.Price] for d in Item.query.filter(Item.Cate == pre_item)]
+            item_num = len(pre_item_list_all)
+            p = pre_item_list_all[random.randint(0, item_num)]
+            print(p[1])
+        else:
+            p = None
+        return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform, pre_item=pre_item, pre_acc=pre_acc, p=p)
     elif imgform.errors:
         print("error")
         flash(imgform.errors['image'][0])
