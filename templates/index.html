@@ -80,15 +80,15 @@
 					<div class="account pull-right">
 						<ul class="user-menu">
 							{% if current_user.is_authenticated %}
-								<a>Hi {{ username }}!</a>
+								<li><a><font color="#eb4800">Hi {{ username }}!</font></a></li>
 							{% endif %}
-							<li><a href="./myaccount.html">My Account</a></li>
+							<li><a href="{{ url_for('.myaccount') }}">My Account</a></li>
 <!--							<li><a href="./cart.html">Your Cart</a></li>-->
 <!--							<li><a href="./checkout.html">Checkout</a></li>-->
 							{% if current_user.is_authenticated %}
 								<li><a href="{{ url_for('.logout') }}">Logout</a></li>
 							{% else %}
-								<li><a href="./register.html">Login</a></li>
+								<li><a href="{{ url_for('.register') }}">Login</a></li>
 							{% endif %}
 						</ul>
 					</div>
@@ -98,54 +98,27 @@
 		<div id="wrapper" class="container">
 			<section class="navbar main-menu">
 				<div class="navbar-inner main-menu">
-					<a href="index.html" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
+					<a href="{{ url_for('.index') }}" class="logo pull-left"><font face="fantasy" size="6"><strong>FindGoods</strong></font></a>
 					<nav id="menu" class="pull-right">
 						<ul>
-							<li><a href="./products.html">Category</a>
+							<li><a>Category</a>
 								<ul>
-									<li><a href="./products.html">Frame</a></li>
-									<li><a href="./products.html">Table Lamp</a></li>
-									<li><a href="./products.html">Vase</a></li>
-									<li><a href="./products.html">Desk</a></li>
-									<li><a href="./products.html">Mug</a></li>
-									<li><a href="./products.html">Footstool</a></li>
-									<li><a href="./products.html">Cushion</a></li>
+									<li><a href="/products/frame">Frames</a></li>
+									<li><a href="/products/lamps">Lamps</a></li>
+									<li><a href="/products/vasesbowl">Vases</a></li>
+									<li><a href="/products/desk">Desks</a></li>
+									<li><a href="/products/mugs">Mugs</a></li>
+									<li><a href="/products/footstool">Footstools</a></li>
+									<li><a href="/products/Cushion">Cushions</a></li>
 								</ul>
-							</li>															
-							<li><a href="./search.html">Photo to Search</a></li>
-							<li><a href="./trend.html">Popular trending</a></li>
-							<li><a href="./about.html">About us</a></li>
+							</li>
+							<li><a href="{{ url_for('.search') }}">Photo to Search</a></li>
+							<li><a href="{{ url_for('.trend') }}">Popular trending</a></li>
+							<li><a href="{{ url_for('.about') }}">About us</a></li>
 						</ul>
 					</nav>
 				</div>
 			</section>
-<!--			<section  class="homepage-slider" id="home-slider">-->
-<!--				<div class="flexslider">-->
-<!--					<ul class="slides">-->
-<!--						<li>-->
-<!--							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_16266865612013271036.jpeg" alt="" />-->
-<!--							<div class="intro">-->
-<!--								<h1>Mid season sale</h1>-->
-<!--								<p><span>Up to 50% Off</span></p>-->
-<!--								<p><span>On selected items online and in stores</span></p>-->
-<!--							</div>-->
-						<!-- </li>
-						<li>
-							<img src="https://www.ikea.com.tw/dairyfarm/tw/pageImages/page__zh_tw_162401349573783886.jpeg" alt="" /> -->
-<!--							<div class="intro">-->
-<!--								<h1>Mid season sale</h1>-->
-<!--								<p><span>Up to 50% Off</span></p>-->
-<!--								<p><span>On selected items online and in stores</span></p>-->
-<!--							</div>-->
-						<!-- </li>
-					</ul>
-				</div>			
-			</section> -->
-			<!-- <section class="header_text">
-				We are good at mastering trends and recommend high-quality furniture decorations for you.
-				<br/>Here, you'll be sure to find top quality home decor selects which fit your home style.
-				<br/>Don't miss to share your preference for home design with us. We're sure that our recommendation system won't let you down.
-			</section> -->
 			{% for tag in tags %}
 			<section class="main-content">
 				<div class="row">
@@ -155,23 +128,27 @@
 								<h4 class="title">
 									<span class="pull-left"><span class="text"><span class="line">Feature <strong>{{tag}}</strong></span></span></span>
 									<span class="pull-right">
-										<a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
+										<a class="left button" href={{"#myCarousel"~tag}} data-slide="prev"></a><a class="right button" href={{"#myCarousel"~tag}} data-slide="next"></a>
+<!--										<a class="left button" href="#myCarousel1" data-slide="prev"></a><a class="right button" href="#myCarousel1" data-slide="next"></a>-->
 									</span>
 								</h4>
-								<div id="myCarousel" class="myCarousel carousel slide">
+								<div id={{"myCarousel"~tag}} class="myCarousel carousel slide">
+<!--									<div id="myCarousel1" class="myCarousel carousel slide">-->
 									<div class="carousel-inner">
 										<div class="active item">
 											<ul class="thumbnails">
+<!--												插入迴圈-->
 												{% for i in dataInfo[tag][0:4] %}
-												<li class="span3">
-													<div class="product-box">
-														<span class="sale_tag"></span>
-														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
-														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-														<a href="products.html" class="category"> {{i[5]}}</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-													</div>
-												</li>
+													<li class="span3">
+														<div class="product-box">
+															<span class="sale_tag"></span>
+<!--															<p><a href="/recommend/{{i[-1]}}"><img src="{{url_for('static', filename=i[1])}}" alt="" /></a></p>-->
+															<p><a href="/recommend/{{i[-1]}}"><img src="{{i[1]}}" alt="" /></a></p>
+															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+															<a class="category"> {{i[4]}}</a>
+															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														</div>
+													</li>
 												{% endfor %}
 											</ul>
 										</div>
@@ -179,193 +156,81 @@
 											<ul class="thumbnails">
 <!--												插入迴圈-->
 												{% for i in dataInfo[tag][4:8] %}
-												<li class="span3">
-													<div class="product-box">
-														<span class="sale_tag"></span>
-														<p><a href="{{i[3]}}"><img src="{{ url_for('static', filename=i[1]) }}" alt="" /></a></p>
-														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
-														<a href="products.html" class="category">{{i[5]}}</a>
-														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
-													</div>
-												</li>
+													<li class="span3">
+														<div class="product-box">
+															<span class="sale_tag"></span>
+<!--															<p><a href="/recommend/{{i[-1]}}"><img src="{{url_for('static', filename=i[1])}}" alt="" /></a></p>-->
+															<p><a href="/recommend/{{i[-1]}}"><img src="{{i[1]}}" alt="" /></a></p>
+															<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+															<a class="category">{{i[4]}}</a>
+															<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+														</div>
+													</li>
 												{% endfor %}
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/5.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Know exactly</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$22.30</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/6.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>-->
-<!--														<a href="products.html" class="category">Commodo consequat</a>-->
-<!--														<p class="price">$40.25</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/7.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">You think water</a><br/>-->
-<!--														<a href="products.html" class="category">World once</a>-->
-<!--														<p class="price">$10.45</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/ladies/8.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Quis nostrud exerci</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$35.50</p>-->
-<!--													</div>-->
-<!--												</li>																																	-->
 											</ul>
 										</div>
+										<p align="right"><u><a href="/products/{{tag}}" ><font color="#eb4800" size="4"><b>more</b></font></a></u></p>
 									</div>							
 								</div>
 							</div>						
 						</div>
 						<br/>
-						<div class="page-normal">
-							<span class="page-prev">&lt;</span>
-							<!-- 數字1 代表當前頁面-->
-							<a class="page-current">1</a>
-							<a href="index2.html">2</a>
-							<a href="index3.html">3</a>
-							<a href="#">4</a>
-							<a href="#">5</a>
-							<a href="#">6</a>
-							<a href="#">7</a>
-							<a href="#">8</a>
-							<a href="#">9</a>
-							<a href="#">10</a>
-<!--							……-->
-<!--							<a href="#">19</a>-->
-<!--							<a href="#">20</a>-->
-							<a href="#">&gt;</a>
-						</div>
-						<!-- <div class="row">
-							<div class="span12">
-								<h4 class="title">
-									<span class="pull-left"><span class="text"><span class="line">Select Your <strong>Preference</strong></span></span></span>
-									<span class="pull-right">
-										<a class="left button" href="#myCarousel-2" data-slide="prev"></a><a class="right button" href="#myCarousel-2" data-slide="next"></a>
-									</span>
-								</h4> -->
-<!--								<div id="myCarousel-2" class="myCarousel carousel slide">-->
-<!--									<div class="carousel-inner">-->
-<!--										<div class="active item">-->
-<!--											<ul class="thumbnails">-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<span class="sale_tag"></span>-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware2.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>-->
-<!--														<a href="products.html" class="category">Commodo consequat</a>-->
-<!--														<p class="price">$25.50</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware1.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Quis nostrud exerci tation</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$17.55</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware6.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Know exactly turned</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$25.30</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware5.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">You think fast</a><br/>-->
-<!--														<a href="products.html" class="category">World once</a>-->
-<!--														<p class="price">$25.60</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--											</ul>-->
-<!--										</div>-->
-<!--										<div class="item">-->
-<!--											<ul class="thumbnails">-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware4.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Know exactly</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$45.50</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware3.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Ut wisi enim ad</a><br/>-->
-<!--														<a href="products.html" class="category">Commodo consequat</a>-->
-<!--														<p class="price">$33.50</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware2.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">You think water</a><br/>-->
-<!--														<a href="products.html" class="category">World once</a>-->
-<!--														<p class="price">$45.30</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--												<li class="span3">-->
-<!--													<div class="product-box">-->
-<!--														<p><a href="product_detail.html"><img src="{{url_for('static', filename='img/cloth/bootstrap-women-ware1.jpg')}}" alt="" /></a></p>-->
-<!--														<a href="product_detail.html" class="title">Quis nostrud exerci</a><br/>-->
-<!--														<a href="products.html" class="category">Quis nostrud</a>-->
-<!--														<p class="price">$25.20</p>-->
-<!--													</div>-->
-<!--												</li>-->
-<!--											</ul>-->
-<!--										</div>-->
-<!--									</div>							-->
-<!--								</div>-->
-<!--							</div>						-->
+<!--						<div class="page-normal">-->
+<!--							<span class="page-prev">&lt;</span>-->
+<!--							&lt;!&ndash; 數字1 代表當前頁面&ndash;&gt;-->
+<!--							<a class="page-current">1</a>-->
+<!--							<a href="index2.html">2</a>-->
+<!--							<a href="index3.html">3</a>-->
+<!--							<a href="#">4</a>-->
+<!--							<a href="#">5</a>-->
+<!--							<a href="#">6</a>-->
+<!--							<a href="#">7</a>-->
+<!--							<a href="#">8</a>-->
+<!--							<a href="#">9</a>-->
+<!--							<a href="#">10</a>-->
+<!--							<a href="#">&gt;</a>-->
 <!--						</div>-->
-<!--						<div class="row feature_box">						-->
-<!--							<div class="span4">-->
-<!--								<div class="service">-->
-<!--									<div class="responsive">	-->
-<!--										<img src="{{url_for('static', filename='img/feature_img_2.png')}}" alt="" />-->
-<!--										<h4>MODERN <strong>DESIGN</strong></h4>-->
-<!--										<p>Lorem Ipsum is simply dummy text of the printing and printing industry unknown printer.</p>									-->
-<!--									</div>-->
-<!--								</div>-->
-<!--							</div>-->
-<!--							<div class="span4">	-->
-<!--								<div class="service">-->
-<!--									<div class="customize">			-->
-<!--										<img src="{{url_for('static', filename='img/feature_img_1.png')}}" alt="" />-->
-<!--										<h4>FREE <strong>SHIPPING</strong></h4>-->
-<!--										<p>Lorem Ipsum is simply dummy text of the printing and printing industry unknown printer.</p>-->
-<!--									</div>-->
-<!--								</div>-->
-<!--							</div>-->
-<!--							<div class="span4">-->
-<!--								<div class="service">-->
-<!--									<div class="support">	-->
-<!--										<img src="{{url_for('static', filename='img/feature_img_3.png')}}" alt="" />-->
-<!--										<h4>24/7 LIVE <strong>SUPPORT</strong></h4>-->
-<!--										<p>Lorem Ipsum is simply dummy text of the printing and printing industry unknown printer.</p>-->
-<!--									</div>-->
-<!--								</div>-->
-<!--							</div>	-->
-<!--						</div>		-->
 					</div>
 				</div>
 			</section>
 			{%endfor%}
+			{% if current_user.is_authenticated %}
+			<section class="main-content">
+				<div class="row">
+					<div class="span12">
+						<div class="row">
+							<div class="span12">
+								<h4 class="title">
+									<span class="pull-left"><span class="text"><span class="line">Guess Your <strong>Preference</strong></span></span></span>
+<!--									<span class="pull-right">-->
+<!--										<a class="left button" href="#myCarousel-2" data-slide="prev"></a><a class="right button" href="#myCarousel-2" data-slide="next"></a>-->
+<!--									</span>-->
+								</h4>
+								<div id="myCarousel-2" class="myCarousel carousel slide">
+									<div class="carousel-inner">
+										<div class="active item">
+											<ul class="thumbnails">
+												{%for i in recdata%}
+												<li class="span3">
+													<div class="product-box">
+														<span class="sale_tag"></span>
+														<p><a href="/recommend/{{i[-1]}}"><img src="{{i[1]}}" alt="" /></a></p>
+														<p class="itemname"><font face="Courgette" size="1">{{i[0]}}</font></p><br/>
+														<a href="products.html" class="category">{{i[6]}}</a>
+														<p class="price"><font face="fantasy" size="3">NT${{i[3]}}</font></p>
+													</div>
+												</li>
+												{%endfor%}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			{% endif %}
 <!--			<section class="our_client">-->
 <!--				<h4 class="title"><span class="text">Manufactures</span></h4>-->
 <!--				<div class="row">					-->
@@ -396,23 +261,11 @@
 					<div class="span5">
 						<h4>Navigation</h4>
 						<ul class="nav">
-							<li><a href="./index.html">Homepage</a></li>
-							<li><a href="./myaccount.html">My Account</a></li>
-							<li><a href="./about.html">About Us</a></li>
-<!--							<li><a href="./contact.html">Contact Us</a></li>-->
-<!--							<li><a href="./cart.html">Cart</a></li>-->
-<!--							<li><a href="./register.html">Login</a></li>-->
+							<li><a href="{{ url_for('.index') }}">Homepage</a></li>
+							<li><a href="{{ url_for('.myaccount') }}">My Account</a></li>
+							<li><a href="{{ url_for('.about') }}">About Us</a></li>
 						</ul>					
 					</div>
-<!--					<div class="span4">-->
-<!--						<h4><a href="myaccount.html">My Account</a></h4>-->
-<!--						<ul class="nav">-->
-<!--							<li><a href="myaccount.html">My Account</a></li>-->
-<!--							<li><a href="#">Order History</a></li>-->
-<!--							<li><a href="#">Wish List</a></li>-->
-<!--							<li><a href="#">Newsletter</a></li>-->
-<!--						</ul>-->
-<!--					</div>-->
 					<div class="span5">
 						<p class="logo"><img src="{{url_for('static', filename='img/logo.png')}}" class="site_logo" alt=""></p>
 						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. the  Lorem Ipsum has been the industry's standard dummy text ever since the you.</p>
@@ -421,9 +274,6 @@
 							<a class="facebook" href="https://www.facebook.com/oldpig81701"><i class="fab fa-facebook fa-2x"></i></a>
 							<a class="instagram" href="https://www.instagram.com/tsung_yo_chu/"><i class="fab fa-instagram fa-2x"></i></a>
 							<a class="linkedin" href="https://www.linkedin.com/in/joseph-chu-275660180"><i class="fab fa-linkedin fa-2x"></i></a>
-<!--							<a class="twitter" href="#">Twitter</a>-->
-<!--							<a class="skype" href="#">Skype</a>-->
-<!--							<a class="vimeo" href="#">Vimeo</a>-->
 						</span>
 					</div>					
 				</div>	
