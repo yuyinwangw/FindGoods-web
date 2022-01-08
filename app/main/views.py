@@ -68,7 +68,7 @@ def register():
                             career=reform.career.data)
             db.session.add(user)
             db.session.commit()
-            login_user(user, reform.remember_me_r.data)
+            login_user(user)
             print(session)
             return redirect(url_for('.index'))
         flash('Username has been used!')
@@ -76,7 +76,7 @@ def register():
     elif loginform.validate_on_submit():
         user = User.query.filter_by(username=loginform.username.data).first()
         if user is not None and user.verify_password(loginform.password.data):
-            login_user(user, loginform.remember_me.data)
+            login_user(user, remember=loginform.remember_me.data)
             print(session)
             # return redirect(url_for('.protected'))
             return redirect(url_for('.index'))
@@ -115,7 +115,7 @@ def index():
         recdata = [[d.item1, d.item2, d.item3, d.item4, d.item5, d.item6, d.item7, d.item8, d.item9, d.item10] for d in db.session.query(Recomm).filter(Recomm.userId == theid)]
         # print(recdata[0])
         result = [[d.ItemName, d.IMG_URL, d.URL, str(d.Price), d.Brand, d.Cate, d.TAGS, d.ItemID] for d in db.session.query(Item).filter(Item.ItemID.in_(recdata[0]))]
-        print(result)
+        # print(result)
         return render_template('index.html', dataInfo=info, username=username, tags=tags, recdata=result[:8])
     else:
         username = ''
@@ -153,10 +153,11 @@ def recommend(itemid):
         user = User.query.get(current_user.id)
         username = user.username
         date_now = "D" + str(datetime.date.today()).replace("-", "")
-        if mongo.db[date_now].find({'_id': user.id.strip("0")}):
-            mongo.db[date_now].update({"name": username}, {"$push": {"click": {itemid: 1}}})
+        if list(mongo.db[date_now].find({'_id': user.id.strip("0")})):
+            click_itemid = "click." + itemid
+            mongo.db[date_now].update({"name": username}, {"$set": {click_itemid: 1}})
         else:
-            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": [{itemid: 1}]})
+            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": {itemid: 1}})
         # if click_read(date_now, user.id.strip("0")):
         #     click_update(date_now, username, itemid)
         # else:
@@ -235,7 +236,7 @@ def search():
         username = ''
     imgform = PhotoForm()
     print(imgform.image.data)
-    print(app.config['default'].UPLOAD_FOLDER)
+    # print(app.config['default'].UPLOAD_FOLDER)
     if imgform.validate_on_submit():
         image = imgform.image.data
         # print(image)
@@ -250,7 +251,7 @@ def search():
         pre_acc = "Accuracy: " + str(pre_list[0][0])
         if pre_list[0][0] >= 0.9:
             pre_item_list_all = [[d.ItemID, d.IMG_URL, d.ItemName, d.Price] for d in Item.query.filter(Item.Cate == pre_item)]
-            item_num = len(pre_item_list_all)
+            item_num = len(pre_item_list_all)-1
             p = pre_item_list_all[random.randint(0, item_num)]
             print(p[1])
         else:
