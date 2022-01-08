@@ -216,14 +216,17 @@ def myaccount():
     return render_template('myaccount.html', userInfo=userInfo, username=username)
 
 
-@main.route('/products.html', methods=['GET'])
-def product():
-    if current_user.is_authenticated:
-        user = User.query.get(current_user.id)
-        username = user.username
-    else:
-        username = ''
-    return render_template('products.html', username=username)
+@main.route('/products/<tags>', methods=['GET'])
+# def product():
+#     if current_user.is_authenticated:
+#         user = User.query.get(current_user.id)
+#         username = user.username
+#     else:
+#         username = ''
+def show_product(tags):
+    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME] for d, p in
+                db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+    return render_template('products.html', dataInfo=dataInfo, tags=tags)
 
 
 @main.route('/search.html', methods=['GET', 'POST'])
