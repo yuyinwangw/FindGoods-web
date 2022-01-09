@@ -5,7 +5,7 @@ import app
 from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db, mongo
-from ..Image_recognition import img_recognition
+from ..Image_recognition import img_recognition, pred_list
 from ..models import Item, User, Recomm, Plform
 import os
 import pandas as pd
@@ -13,6 +13,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 import datetime
+from tensorflow.keras import models
 
 
 # @main.route('/protected')
@@ -48,6 +49,10 @@ def get_recommendations(itemid, cosine_sim, indices, n, df2):
     #     # use 1:n because 0 is the same movie entered
     #     top_n_idx = list(scores.iloc[1:n].index)
     #     return df2['title'].iloc[top_n_idx]
+
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+net = models.load_model(os.path.join(app.config['default'].UPLOAD_FOLDER, "model-resnet50-final.h5"))
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -231,7 +236,7 @@ def search():
     else:
         username = ''
     imgform = PhotoForm()
-    print(imgform.image.data)
+    # print(imgform.image.data)
     # print(app.config['default'].UPLOAD_FOLDER)
     if imgform.validate_on_submit():
         image = imgform.image.data
@@ -241,15 +246,18 @@ def search():
         image.save(os.path.join(app.config['default'].UPLOAD_FOLDER, filename))
         uploadfile_path = 'img/uploads/' + filename
         # print(uploadfile_path)
-        print(os.getcwd())
-        pre_list = img_recognition(os.path.join(app.config['default'].UPLOAD_FOLDER, 'model-resnet50-final.h5'), filename)
+        # print(os.getcwd())
+        # pre_list = img_recognition('model-resnet50-final.h5', filename)
+        x = img_recognition(filename)
+        pred = net.predict(x)[0]
+        pre_list = pred_list(pred)
         pre_item = pre_list[0][1]
         pre_acc = "Accuracy: " + str(pre_list[0][0])
         if pre_list[0][0] >= 0.9:
             pre_item_list_all = [[d.ITEMID, d.IMG_URL, d.ITEMNAME, d.PRICE] for d in Item.query.filter(Item.CATE == pre_item)]
             item_num = len(pre_item_list_all)-1
             p = pre_item_list_all[random.randint(0, item_num)]
-            print(p[1])
+            # print(p[1])
         else:
             p = None
         return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform, pre_item=pre_item, pre_acc=pre_acc, p=p)
