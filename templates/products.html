@@ -90,8 +90,12 @@
 								<li class="span3">
 									<div class="product-box">
 										<span class="sale_tag"></span>
-										<a href="{{f[2]}}"><img alt="" src="{{f[1]}}" width="60%"></a><br/>
-										<a href="{{f[2]}}" class="title">{{f[0].replace("AP", "").replace("CN", "")}}</a><br/>
+										<a href="/recommend/{{f[-1]}}"><img alt="" src="{{f[1]}}"></a><br/>
+										{% if f[0]|length>20 %}
+										<a href="/recommend/{{f[-1]}}" class="title">{{f[0][0:19]}}</a><br/>
+										{% else %}
+										<a href="{{f[2]}}" class="title">{{f[0]}}</a><br/>
+										{% endif %}
 										<span class="brand">{{f[6]}} {{f[5]}}</span>
 										<br>
 										<a class="category">{{f[4]}}</a>
