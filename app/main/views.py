@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session, flash
+from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.orm import load_only
 import app
@@ -11,6 +11,8 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from flask_paginate import Pagination, get_page_parameter
+import json
 import random
 import datetime
 from tensorflow.keras import models
@@ -176,19 +178,22 @@ def recommend(itemid):
     # print(df2)
     count = CountVectorizer()
     count_matrix = count.fit_transform(df2['keywords'])
-
     cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
     indices = pd.Series(df2.index, index=df2['title'])
     # print(indices)
     # user_select = [[d.ITEMID, d.CATE] for d in db.session.query(Item).filter(Item.ITEMID == itemid)]
     userselect = [[d.ITEMNO, d.ITEMID, d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS] for d in db.session.query(Item).filter(Item.ITEMID == itemid)]
-    recomItem = get_recommendations(int(itemid), cosine_sim2, indices, 5, df2).values.tolist()
-    # print(tuple(recomItem))
-    # recomlist = tuple([i for i in map(lambda x:str(x) ,recomItem)])
+    recomItem = get_recommendations(int(itemid), cosine_sim2, indices, 6, df2).values.tolist()
     dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in db.session.query(Item).filter(Item.ITEMID.in_(recomItem))]
+    dataInfo_drop_userselect = []
+    for n in dataInfo:
+        if n[0] != userselect[0][2]:
+            dataInfo_drop_userselect.append(n)
+        else:
+            pass
     # print(dataInfo)
     # dataInfo = []
-    return render_template('contentbase.html', username=username, userselect=userselect, dataInfo=dataInfo)
+    return render_template('contentbase.html', username=username, userselect=userselect, dataInfo_drop_userselect=dataInfo_drop_userselect)
 
 
 @main.route('/myaccount.html', methods=['GET'])
@@ -211,21 +216,30 @@ def myaccount():
 
 
 @main.route('/products/<tags>', methods=['GET'])
-# def product():
-#     if current_user.is_authenticated:
-#         user = User.query.get(current_user.id)
-#         username = user.username
-#     else:
-#         username = ''
-def show_product(tags):
+@main.route('/products/<tags>/<int:page>', methods=['GET'])
+def view(tags):
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME] for d, p in
-                db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+    page = request.args.get('page', 1, type=int)
+    dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
+    for n in dataInfo.items:
+        if n.PFNO==10:
+            n.PFNO='IKEA'
+        else:
+            n.PFNO='TRPLUS'
     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
+# def show_product(tags):
+#     if current_user.is_authenticated:0
+#         user = User.query.get(current_user.id)
+#         username = user.username
+#     else:
+#         username = ''
+#     dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME, d.ITEMID] for d, p in
+#                       db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+#     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
 
 
 @main.route('/search.html', methods=['GET', 'POST'])
