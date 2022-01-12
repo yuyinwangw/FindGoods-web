@@ -173,33 +173,48 @@
 						<hr>
 						<div class="pagination pagination-small pagination-centered">
 							<ul class="pagination">
-								{% if not dataInfo.has_prev %}
-								<li class="disabled">
-								{% else %}
-								<li>
+								{% if dataInfo.has_prev %}
+									<li><a href="/products/{{tags}}?page={{dataInfo.prev_num}}">Previous</a></li>
 								{% endif %}
-									<a href="/products/{{tags}}?page={{dataInfo.prev_num}}" aria-label="Previous">
-										<span aria-hidden="true">Prev</span>
-									</a>
-								</li>
-								{% for num in range(1, dataInfo.pages+1) %}
-									{% if num == dataInfo.page %}
-									<li class="active">
-									{% else %}
-									<li>
-									{% endif %}
-										<a href="/products/{{tags}}?page={{num}}">{{num}}</a>
-									</li>
+<!--								{% if dataInfo.has_previous %}-->
+<!--    								<li><a href="/products/{{tags}}?page={{dataInfo.prev_num}}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>-->
+<!--								{% else %}-->
+<!--									<li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>-->
+<!--								{% endif %}-->
+								{% for page_num in dataInfo.iter_pages() %}
+    								{% if page_num %}
+        								{% if page_num != dataInfo.page %}
+            								<li><a href="/products/{{tags}}?page={{page_num}}">{{ page_num }}</a></li>
+										{% else %}
+											<li class="active"><a href="#">{{ page_num }}</a></li>
+										{% endif %}
+								   {% else %}
+									   <li><span class="ellipsis" style="white-space; nowrap; overflow: hidden; text-overflow: ellipsis">…</span></li>
+								   {% endif %}
 								{% endfor %}
-								{% if not dataInfo.has_next %}
-								<li class="disabled">
-								{% else %}
-								<li>
+								{% if dataInfo.has_next %}
+									<li><a href="/products/{{tags}}?page={{dataInfo.next_num}}">Next</a></li>
 								{% endif %}
-									<a href="/products/{{tags}}?page={{dataInfo.next_num}}" aria-label="Next">
-										<span aria-hidden="true">Next</span>
-									</a>
-								</li>
+<!--								{% if dataInfo.has_next %}-->
+<!--									<li><a href="/products/{{tags}}?page={{dataInfo.next_num}}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>-->
+<!--								{% else %}-->
+<!--									<li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>-->
+<!--								{% endif %}-->
+<!--								<li {% if not dataInfo.has_prev %} class="disabled" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{dataInfo.prev_num}}" aria-label="Previous">-->
+<!--										<span aria-hidden="true">Prev</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								{% for num in range(1, dataInfo.pages+1) %}-->
+<!--								<li {% if num == dataInfo.page %}c lass="active" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{num}}">{{num}}</a>-->
+<!--								</li>-->
+<!--								{% endfor %}-->
+<!--								<li {% if not dataInfo.has_next %} class="disabled" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{dataInfo.next_num}}" aria-label="Next">-->
+<!--										<span aria-hidden="true">Next</span>-->
+<!--									</a>-->
+<!--								</li>-->
 <!--								<li><a href="#">3</a></li>-->
 <!--								<li><a href="#">4</a></li>-->
 <!--								<li><a href="#">Next</a></li>-->

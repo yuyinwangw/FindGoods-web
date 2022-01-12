@@ -11,8 +11,6 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-# from flask_paginate import Pagination, get_page_parameter
-# import json
 import random
 import datetime
 from tensorflow.keras import models
