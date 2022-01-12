@@ -78,7 +78,7 @@
 				</div>
 			</section>
 			<section class="header_text sub">
-			<img class="pageBanner" src="{{ url_for('static', filename='img/search.png') }}" alt="New products" >
+			<img class="pageBanner" src="{{ url_for('static', filename='img/login.png') }}" alt="New products" >
 				<br>
 				<h4><span><font size="5">{{tags}}</font></span></h4>
 			</section>
@@ -173,17 +173,29 @@
 						<hr>
 						<div class="pagination pagination-small pagination-centered">
 							<ul class="pagination">
-								<li {% if not dataInfo.has_prev %} class="disabled" {% endif %}>
+								{% if not dataInfo.has_prev %}
+								<li class="disabled">
+								{% else %}
+								<li>
+								{% endif %}
 									<a href="/products/{{tags}}?page={{dataInfo.prev_num}}" aria-label="Previous">
 										<span aria-hidden="true">Prev</span>
 									</a>
 								</li>
 								{% for num in range(1, dataInfo.pages+1) %}
-								<li {% if num == dataInfo.page %}c lass="active" {% endif %}>
-									<a href="/products/{{tags}}?page={{num}}">{{num}}</a>
-								</li>
+									{% if num == dataInfo.page %}
+									<li class="active">
+									{% else %}
+									<li>
+									{% endif %}
+										<a href="/products/{{tags}}?page={{num}}">{{num}}</a>
+									</li>
 								{% endfor %}
-								<li {% if not dataInfo.has_next %} class="disabled" {% endif %}>
+								{% if not dataInfo.has_next %}
+								<li class="disabled">
+								{% else %}
+								<li>
+								{% endif %}
 									<a href="/products/{{tags}}?page={{dataInfo.next_num}}" aria-label="Next">
 										<span aria-hidden="true">Next</span>
 									</a>
