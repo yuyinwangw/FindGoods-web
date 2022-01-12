@@ -6,13 +6,13 @@ from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db, mongo
 from ..Image_recognition import img_recognition, pred_list
-from ..models import Item, User, Recomm, Plform
+from ..models import Item, User, Recomm
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from flask_paginate import Pagination, get_page_parameter
-import json
+# from flask_paginate import Pagination, get_page_parameter
+# import json
 import random
 import datetime
 from tensorflow.keras import models
@@ -239,10 +239,10 @@ def view(tags):
     page = request.args.get('page', 1, type=int)
     dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
     for n in dataInfo.items:
-        if n.PFNO==10:
-            n.PFNO='IKEA'
+        if n.PFNO == 10:
+            n.PFNO = 'IKEA'
         else:
-            n.PFNO='TRPLUS'
+            n.PFNO = 'TRPLUS'
     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
 # def show_product(tags):
 #     if current_user.is_authenticated:0
