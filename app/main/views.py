@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session, flash
+from flask import render_template, redirect, url_for, session, flash, request
 from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy.orm import load_only
 import app
@@ -12,6 +12,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask_paginate import Pagination, get_page_parameter
+import json
 import random
 import datetime
 
@@ -210,24 +211,30 @@ def myaccount():
 
 
 @main.route('/products/<tags>', methods=['GET'])
-# def view(page=1):
-#     if current_user.is_authenticated:
-#         user = User.query.get(current_user.id)
-#         username = user.username
-#     else:
-#         username = ''
-#     # dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME, d.ITEMID] for d, p in
-#     #                     db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
-#     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
-def show_product(tags):
+@main.route('/products/<tags>/<int:page>', methods=['GET'])
+def view(tags):
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
         username = user.username
     else:
         username = ''
-    dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME, d.ITEMID] for d, p in
-                      db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+    page = request.args.get('page', 1, type=int)
+    dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
+    for n in dataInfo.items:
+        if n.PFNO==10:
+            n.PFNO='IKEA'
+        else:
+            n.PFNO='TRPLUS'
     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
+# def show_product(tags):
+#     if current_user.is_authenticated:0
+#         user = User.query.get(current_user.id)
+#         username = user.username
+#     else:
+#         username = ''
+#     dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.CATE, d.BRAND, p.PFNAME, d.ITEMID] for d, p in
+#                       db.session.query(Item, Plform).filter(Item.CATE == tags).filter(Item.PFNO == Plform.PFNO)]
+#     return render_template('products.html', username=username, dataInfo=dataInfo, tags=tags)
 
 
 @main.route('/search.html', methods=['GET', 'POST'])
