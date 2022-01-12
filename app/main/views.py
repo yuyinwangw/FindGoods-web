@@ -14,6 +14,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import random
 import datetime
 from tensorflow.keras import models
+import unicodedata
 
 
 # @main.route('/protected')
@@ -49,6 +50,17 @@ def get_recommendations(itemid, cosine_sim, indices, n, df2):
     #     # use 1:n because 0 is the same movie entered
     #     top_n_idx = list(scores.iloc[1:n].index)
     #     return df2['title'].iloc[top_n_idx]
+
+
+def chr_width(c):
+    if unicodedata.east_asian_width(c) in ('F', 'W', 'A'):
+        return 2
+    else:
+        return 1
+
+
+def ch_length(unistr):
+    return sum([chr_width(char) for char in unistr])
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -136,6 +148,7 @@ def index():
             info[i] = list()
         for data in dataInfo:
             if data[5] == i:
+                data.append(ch_length(data[0]))
                 info[i].append(data)
     # print(info)
     # print(info['vasesbowl'])
@@ -159,11 +172,11 @@ def recommend(itemid):
         user = User.query.get(current_user.id)
         username = user.username
         date_now = "D" + str(datetime.date.today()).replace("-", "")
-        if list(mongo.db[date_now].find({'_id': user.id.strip("0")})):
+        if list(mongo.db[date_now].find({'_id': user.id.lstrip("0")})):
             click_itemid = "click." + itemid
             mongo.db[date_now].update({"name": username}, {"$set": {click_itemid: 1}})
         else:
-            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": {itemid: 1}})
+            mongo.db[date_now].insert({'_id': user.id.lstrip("0"), "name": username, "click": {itemid: 1}})
         # if click_read(date_now, user.id.strip("0")):
         #     click_update(date_now, username, itemid)
         # else:
