@@ -11,12 +11,8 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-<<<<<<< HEAD
-from sqlalchemy.sql.expression import func
-=======
 # from flask_paginate import Pagination, get_page_parameter
 # import json
->>>>>>> 734f661c0e15384ad53adfd68020cc9dcda9b7ca
 import random
 import datetime
 from tensorflow.keras import models
@@ -244,11 +240,7 @@ def view(tags):
     else:
         username = ''
     page = request.args.get('page', 1, type=int)
-<<<<<<< HEAD
     dataInfo = Item.query.filter(Item.CATE == tags).order_by(func.random()).paginate(page=int(page), per_page=20)
-=======
-    dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
->>>>>>> 734f661c0e15384ad53adfd68020cc9dcda9b7ca
     for n in dataInfo.items:
         if n.PFNO == 10:
             n.PFNO = 'IKEA'
