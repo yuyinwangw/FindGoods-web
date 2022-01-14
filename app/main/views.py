@@ -5,15 +5,22 @@ import app
 from . import main
 from .forms import LoginForm, RegisterForm, PhotoForm
 from .. import db, mongo
-from ..Image_recognition import img_recognition
-from ..models import Item, User, Recomm, Plform
+from ..Image_recognition import img_recognition, pred_list
+from ..models import Item, User, Recomm
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+<<<<<<< HEAD
 from sqlalchemy.sql.expression import func
+=======
+# from flask_paginate import Pagination, get_page_parameter
+# import json
+>>>>>>> 734f661c0e15384ad53adfd68020cc9dcda9b7ca
 import random
 import datetime
+from tensorflow.keras import models
+import unicodedata
 
 
 # @main.route('/protected')
@@ -49,6 +56,21 @@ def get_recommendations(itemid, cosine_sim, indices, n, df2):
     #     # use 1:n because 0 is the same movie entered
     #     top_n_idx = list(scores.iloc[1:n].index)
     #     return df2['title'].iloc[top_n_idx]
+
+
+def chr_width(c):
+    if unicodedata.east_asian_width(c) in ('F', 'W', 'A'):
+        return 2
+    else:
+        return 1
+
+
+def ch_length(unistr):
+    return sum([chr_width(char) for char in unistr])
+
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+net = models.load_model(os.path.join(app.config['default'].UPLOAD_FOLDER, "model-resnet50-final.h5"))
 
 
 @main.route('/register.html', methods=['GET', 'POST'])
@@ -132,6 +154,7 @@ def index():
             info[i] = list()
         for data in dataInfo:
             if data[5] == i:
+                data.append(ch_length(data[0]))
                 info[i].append(data)
     # print(info)
     # print(info['vasesbowl'])
@@ -155,11 +178,11 @@ def recommend(itemid):
         user = User.query.get(current_user.id)
         username = user.username
         date_now = "D" + str(datetime.date.today()).replace("-", "")
-        if list(mongo.db[date_now].find({'_id': user.id.strip("0")})):
+        if list(mongo.db[date_now].find({'_id': user.id.lstrip("0")})):
             click_itemid = "click." + itemid
             mongo.db[date_now].update({"name": username}, {"$set": {click_itemid: 1}})
         else:
-            mongo.db[date_now].insert({'_id': user.id.strip("0"), "name": username, "click": {itemid: 1}})
+            mongo.db[date_now].insert({'_id': user.id.lstrip("0"), "name": username, "click": {itemid: 1}})
         # if click_read(date_now, user.id.strip("0")):
         #     click_update(date_now, username, itemid)
         # else:
@@ -221,7 +244,11 @@ def view(tags):
     else:
         username = ''
     page = request.args.get('page', 1, type=int)
+<<<<<<< HEAD
     dataInfo = Item.query.filter(Item.CATE == tags).order_by(func.random()).paginate(page=int(page), per_page=20)
+=======
+    dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
+>>>>>>> 734f661c0e15384ad53adfd68020cc9dcda9b7ca
     for n in dataInfo.items:
         if n.PFNO == 10:
             n.PFNO = 'IKEA'
@@ -247,7 +274,7 @@ def search():
     else:
         username = ''
     imgform = PhotoForm()
-    print(imgform.image.data)
+    # print(imgform.image.data)
     # print(app.config['default'].UPLOAD_FOLDER)
     if imgform.validate_on_submit():
         image = imgform.image.data
@@ -257,15 +284,18 @@ def search():
         image.save(os.path.join(app.config['default'].UPLOAD_FOLDER, filename))
         uploadfile_path = 'img/uploads/' + filename
         # print(uploadfile_path)
-        print(os.getcwd())
-        pre_list = img_recognition(os.path.join(app.config['default'].UPLOAD_FOLDER, 'model-resnet50-final.h5'), filename)
+        # print(os.getcwd())
+        # pre_list = img_recognition('model-resnet50-final.h5', filename)
+        x = img_recognition(filename)
+        pred = net.predict(x)[0]
+        pre_list = pred_list(pred)
         pre_item = pre_list[0][1]
         pre_acc = "Accuracy: " + str(pre_list[0][0])
         if pre_list[0][0] >= 0.9:
             pre_item_list_all = [[d.ITEMID, d.IMG_URL, d.ITEMNAME, d.PRICE] for d in Item.query.filter(Item.CATE == pre_item)]
             item_num = len(pre_item_list_all)-1
             p = pre_item_list_all[random.randint(0, item_num)]
-            print(p[1])
+            # print(p[1])
         else:
             p = None
         return render_template('search.html', username=username, uploadfile_path=uploadfile_path, imgform=imgform, pre_item=pre_item, pre_acc=pre_acc, p=p)
