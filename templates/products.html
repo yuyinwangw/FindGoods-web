@@ -86,20 +86,20 @@
 				<div class="row">
 					<div class="span12">
 						<ul class="thumbnails listing-products">
-							{% for f in dataInfo %}
+							{% for f in dataInfo.items %}
 								<li class="span3">
 									<div class="product-box">
 										<span class="sale_tag"></span>
-										<a href="/recommend/{{f[-1]}}"><img alt="" src="{{f[1]}}"></a><br/>
-										{% if f[0]|length>20 %}
-										<a href="/recommend/{{f[-1]}}" class="title">{{f[0][0:19]}}</a><br/>
+										<a href="/recommend/{{f.ITEMID}}"><img alt="" src="{{f.IMG_URL}}"></a><br/>
+										{% if f.ITEMNAME|length>20 %}
+										<a href="/recommend/{{f.ITEMID}}" class="title">{{f.ITEMNAME[0:19]}}</a><br/>
 										{% else %}
-										<a href="{{f[2]}}" class="title">{{f[0]}}</a><br/>
+										<a href="/recommend/{{f.ITEMID}}" class="title">{{f.ITEMNAME}}</a><br/>
 										{% endif %}
-										<span class="brand">{{f[6]}} {{f[5]}}</span>
+										<span class="brand">{{f.PFNO}} {{f.BRAND}}</span>
 										<br>
-										<a class="category">{{f[4]}}</a>
-										<p class="price">NT${{f[3]}}</p>
+										<a class="category">{{f.CATE}}</a>
+										<p class="price">NT${{f.PRICE}}</p>
 									</div>
 								</li>
 							{% endfor %}
@@ -172,13 +172,52 @@
 						</ul>
 						<hr>
 						<div class="pagination pagination-small pagination-centered">
-							<ul>
-								<li><a href="#">Prev</a></li>
-								<li class="active"><a href="#">1</a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#">Next</a></li>
+							<ul class="pagination">
+								{% if dataInfo.has_prev %}
+									<li><a href="/products/{{tags}}?page={{dataInfo.prev_num}}">Previous</a></li>
+								{% endif %}
+<!--								{% if dataInfo.has_previous %}-->
+<!--    								<li><a href="/products/{{tags}}?page={{dataInfo.prev_num}}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>-->
+<!--								{% else %}-->
+<!--									<li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>-->
+<!--								{% endif %}-->
+								{% for page_num in dataInfo.iter_pages() %}
+    								{% if page_num %}
+        								{% if page_num != dataInfo.page %}
+            								<li><a href="/products/{{tags}}?page={{page_num}}">{{ page_num }}</a></li>
+										{% else %}
+											<li class="active"><a href="#">{{ page_num }}</a></li>
+										{% endif %}
+								    {% else %}
+									   <li><span class="ellipsis" style="white-space; nowrap; overflow: hidden; text-overflow: ellipsis">…</span></li>
+								    {% endif %}
+								{% endfor %}
+								{% if dataInfo.has_next %}
+									<li><a href="/products/{{tags}}?page={{dataInfo.next_num}}">Next</a></li>
+								{% endif %}
+<!--								{% if dataInfo.has_next %}-->
+<!--									<li><a href="/products/{{tags}}?page={{dataInfo.next_num}}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>-->
+<!--								{% else %}-->
+<!--									<li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>-->
+<!--								{% endif %}-->
+<!--								<li {% if not dataInfo.has_prev %} class="disabled" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{dataInfo.prev_num}}" aria-label="Previous">-->
+<!--										<span aria-hidden="true">Prev</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								{% for num in range(1, dataInfo.pages+1) %}-->
+<!--								<li {% if num == dataInfo.page %}c lass="active" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{num}}">{{num}}</a>-->
+<!--								</li>-->
+<!--								{% endfor %}-->
+<!--								<li {% if not dataInfo.has_next %} class="disabled" {% endif %}>-->
+<!--									<a href="/products/{{tags}}?page={{dataInfo.next_num}}" aria-label="Next">-->
+<!--										<span aria-hidden="true">Next</span>-->
+<!--									</a>-->
+<!--								</li>-->
+<!--								<li><a href="#">3</a></li>-->
+<!--								<li><a href="#">4</a></li>-->
+<!--								<li><a href="#">Next</a></li>-->
 							</ul>
 						</div>
 					</div>
