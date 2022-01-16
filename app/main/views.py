@@ -175,10 +175,12 @@ def recommend(itemid):
         username = user.username
         date_now = "D" + str(datetime.date.today()).replace("-", "")
         if list(mongo.db[date_now].find({'_id': user.id.lstrip("0")})):
-            click_itemid = "click." + itemid
-            mongo.db[date_now].update({"name": username}, {"$set": {click_itemid: 1}})
+            # click_itemid = "click." + itemid
+            # mongo.db[date_now].update({"name": username}, {"$set": {click_itemid: 1}})
+            click_timestamp = "click." + str(round(datetime.datetime.now().timestamp()))
+            mongo.db[date_now].update_one({"name": username}, {"$set": {click_timestamp: itemid}})
         else:
-            mongo.db[date_now].insert({'_id': user.id.lstrip("0"), "name": username, "click": {itemid: 1}})
+            mongo.db[date_now].insert_one({'_id': user.id.lstrip("0"), "name": username, "click": {str(round(datetime.datetime.now().timestamp())): itemid}})
         # if click_read(date_now, user.id.strip("0")):
         #     click_update(date_now, username, itemid)
         # else:
