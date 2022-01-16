@@ -11,8 +11,7 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-# from flask_paginate import Pagination, get_page_parameter
-# import json
+from sqlalchemy.sql.expression import func
 import random
 import datetime
 from tensorflow.keras import models
@@ -200,15 +199,18 @@ def recommend(itemid):
     userselect = [[d.ITEMNO, d.ITEMID, d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS] for d in db.session.query(Item).filter(Item.ITEMID == itemid)]
     recomItem = get_recommendations(int(itemid), cosine_sim2, indices, 6, df2).values.tolist()
     dataInfo = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in db.session.query(Item).filter(Item.ITEMID.in_(recomItem))]
-    dataInfo_drop_userselect = []
+    dataInfo_same_cate = [[d.ITEMNAME, d.IMG_URL, d.URL, str(d.PRICE), d.BRAND, d.CATE, d.TAGS, d.ITEMID] for d in db.session.query(Item).filter(Item.CATE == userselect[0][7])]
+    dataInfo_push = []
     for n in dataInfo:
-        if n[0] != userselect[0][2]:
-            dataInfo_drop_userselect.append(n)
-        else:
-            pass
+        if n[0] != userselect[0][2] and n[5] == userselect[0][7]:
+            dataInfo_push.append(n)
+    while len(dataInfo_push) < 4:
+        dataInfo_push.append(random.choice(dataInfo_same_cate))
+        if len(dataInfo_push) == 4:
+            break
     # print(dataInfo)
     # dataInfo = []
-    return render_template('contentbase.html', username=username, userselect=userselect, dataInfo_drop_userselect=dataInfo_drop_userselect)
+    return render_template('contentbase.html', username=username, userselect=userselect, dataInfo_push=dataInfo_push)
 
 
 @main.route('/myaccount.html', methods=['GET'])
@@ -239,7 +241,7 @@ def view(tags):
     else:
         username = ''
     page = request.args.get('page', 1, type=int)
-    dataInfo = Item.query.filter(Item.CATE == tags).paginate(page=int(page), per_page=20)
+    dataInfo = Item.query.filter(Item.CATE == tags).order_by(func.random()).paginate(page=int(page), per_page=20)
     for n in dataInfo.items:
         if n.PFNO == 10:
             n.PFNO = 'IKEA'
